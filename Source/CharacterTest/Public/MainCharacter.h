@@ -33,6 +33,9 @@ class CHARACTERTEST_API AMainCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AMainCharacter();
+	
+	class AGameModeBase* GameModeT; 
+	class AMyGameModeBase* GameMode;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="Enums")
 	EMovementStatus MovementStatus = EMovementStatus::EMS_Normal;
@@ -109,5 +112,4 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void setHP(float value);
 
-	//git test
 };

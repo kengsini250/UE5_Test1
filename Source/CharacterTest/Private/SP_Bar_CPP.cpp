@@ -16,7 +16,7 @@ bool USP_Bar_CPP::Initialize()
 	auto GameMode = Cast<AMyGameModeBase>(GameModeT);
 	if(GameMode)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("Init Delegate"));
+		// UE_LOG(LogTemp,Warning,TEXT("Init Delegate"));
 		GameMode->SetSPDelegate.AddUObject(this,&USP_Bar_CPP::SetSP);
 	}
 	return true;
@@ -24,6 +24,6 @@ bool USP_Bar_CPP::Initialize()
 
 void USP_Bar_CPP::SetSP(float val)
 {
-	UE_LOG(LogTemp,Warning,TEXT("Set Percent"));
+	// UE_LOG(LogTemp,Warning,TEXT("Set Percent"));
 	SP->SetPercent(val);
 }

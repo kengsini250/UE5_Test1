@@ -33,6 +33,10 @@ AMainCharacter::AMainCharacter()
 	GetCharacterMovement()->JumpZVelocity = 300;
 	GetCharacterMovement()->AirControl = 0.75f;
 
+	GameModeT = UGameplayStatics::GetGameMode(GetWorld());
+	GameMode = Cast<AMyGameModeBase>(GameModeT);
+    		
+
 }
 
 void AMainCharacter::SetMovementStatus(EMovementStatus status)
@@ -74,6 +78,7 @@ void AMainCharacter::BeginPlay()
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
 
 	float DeltaSp = SpRate*DeltaTime;
 	switch(SpStatus)
@@ -132,12 +137,32 @@ void AMainCharacter::Tick(float DeltaTime)
 		}
 		break;
 	case ESpStatus::ESS_Exhausted:
+		if(bShiftKeyDown)
+		{
+			SP = 0;
+		}
+		else
+		{
+			SetSpStatus(ESpStatus::ESS_ExhaustedRecovering);
+			SP += DeltaSp;
+		}
+		SetMovementStatus(EMovementStatus::EMS_Normal);
 		break;
 	case ESpStatus::ESS_ExhaustedRecovering:
+		if(SP + DeltaSp >= SpMinStatus)
+		{
+			SetSpStatus(ESpStatus::ESS_Normal);
+			SP += DeltaSp;
+		}else
+		{
+			SP+=DeltaSp;
+		}
+		SetMovementStatus(EMovementStatus::EMS_Normal);
 		break;
 	default:
 		;
 	}
+	GameMode->SetSPDelegate.Broadcast(SP/SP_Max);
 }
 
 // Called to bind functionality to input
@@ -169,16 +194,12 @@ void AMainCharacter::MoveForward(float value)
 		const FVector Direction = FRotationMatrix(YawR).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, value);
 
+		/*
 		//使用委托
 		auto GameModeT = UGameplayStatics::GetGameMode(GetWorld());
 		auto GameMode = Cast<AMyGameModeBase>(GameModeT);
 		if(GameMode)
 		{
-			// UE_LOG(LogTemp,Warning,TEXT("Go delegate"));
-			SP-=10;
-			GameMode->SetSPDelegate.Broadcast(SP/SP_Max);
-
-			
 			//也可以
 			// auto CurrController = Cast<AMainPlayerController>(GetController());
 			// if(CurrController)
@@ -187,6 +208,7 @@ void AMainCharacter::MoveForward(float value)
 			// 	CurrController->setSP(SP/100.0f);
 			// }
 		}
+		*/
 	}
 }
 
