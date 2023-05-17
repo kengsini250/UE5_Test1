@@ -26,4 +26,12 @@ void USP_Bar_CPP::SetSP(float val)
 {
 	// UE_LOG(LogTemp,Warning,TEXT("Set Percent"));
 	SP->SetPercent(val);
+	if(val<0.3)
+	{
+		SP->SetFillColorAndOpacity(FColor::Yellow);	
+	}
+	else
+	{
+		SP->SetFillColorAndOpacity(FColor::Green);	
+	}
 }
