@@ -37,6 +37,9 @@ public:
 	class AGameModeBase* GameModeT; 
 	class AMyGameModeBase* GameMode;
 
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "Items")
+	class AWeapon* Weapon;
+
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="Enums")
 	EMovementStatus MovementStatus = EMovementStatus::EMS_Normal;
 	void SetMovementStatus(EMovementStatus status);
@@ -111,5 +114,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void setHP(float value);
+
+	FORCEINLINE void setWeapon(AWeapon* w)
+	{
+		Weapon = w;
+	}
 
 };

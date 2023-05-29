@@ -22,6 +22,7 @@ void ABoom::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		if(mainCharacter)
 		{
 			mainCharacter->setHP(mainCharacter->HP-Damage);
+			Destroy();
 		}
 	}
 }
