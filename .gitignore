@@ -4,10 +4,12 @@ Intermediate
 Saved
 Content/StarterContent
 Plugins
+Platforms
 
 
 .DS_Store
 .vscode
+.vsconfig
 .vs
 *.VC.db
 *.opensdf
