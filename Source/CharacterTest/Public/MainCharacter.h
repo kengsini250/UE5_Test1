@@ -128,6 +128,11 @@ public:
 	{
 		Weapon = w;
 	}
+	
+	FORCEINLINE AWeapon* getWeapon()
+	{
+		return Weapon;
+	}
 
 	FORCEINLINE void setOverlappingItem(AItem* w)
 	{

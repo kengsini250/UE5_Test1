@@ -69,19 +69,41 @@ void AMainCharacter::G_Up()
 void AMainCharacter::G_Down()
 {
 	bGiveWeapon = true;
-	if (OverlappingItem)
+	//手里没有武器
+	if(Weapon == nullptr)
 	{
-		if (auto weapon = Cast<AWeapon>(OverlappingItem))
+		if (OverlappingItem)
 		{
-			if(Weapon)
+			if (auto weapon = Cast<AWeapon>(OverlappingItem))
 			{
-				Weapon->Destroy();
-				Weapon=nullptr;
+				weapon->Equip(this);
+				setOverlappingItem(nullptr);
 			}
-			weapon->Equip(this);
-			setOverlappingItem(nullptr);
 		}
 	}
+	else
+	{
+		//手里有武器
+		if (OverlappingItem)
+		{
+			if (auto weapon = Cast<AWeapon>(OverlappingItem))
+			{
+				if(Weapon)
+				{
+					Weapon->Destroy();
+					Weapon=nullptr;
+				}
+				weapon->Equip(this);
+				setOverlappingItem(nullptr);
+			}
+		}else
+		{
+			//清空手持武器
+			Weapon->Destroy();
+			Weapon=nullptr;
+		}	
+	}
+
 }
 
 void AMainCharacter::SetSpStatus(ESpStatus status)

@@ -21,8 +21,18 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 	{
 		if(AMainCharacter *mainCharacter = Cast<AMainCharacter>(OtherActor))
 		{
-			//设置重叠Item
-			mainCharacter->setOverlappingItem(this);
+			//如果没有武器
+			if(mainCharacter->getWeapon() == nullptr)
+			{
+				//自动捡起武器
+				Equip(mainCharacter);
+			}
+			else
+			{
+				//设置重叠Item
+				mainCharacter->setOverlappingItem(this);	
+			}
+			
     	}	
 	}
 	
