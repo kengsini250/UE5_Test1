@@ -40,6 +40,10 @@ public:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "Items")
 	class AWeapon* Weapon;
 
+	//捡武器-》与武器重叠
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "Items")
+	class AItem* OverlappingItem;
+	
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="Enums")
 	EMovementStatus MovementStatus = EMovementStatus::EMS_Normal;
 	void SetMovementStatus(EMovementStatus status);
@@ -53,6 +57,11 @@ public:
 	bool bShiftKeyDown = false;
 	void ShiftKeyDown();
 	void ShiftKeyUp();
+
+	//扔武器 G
+	bool bGiveWeapon = false;
+	void G_Up();
+	void G_Down();
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="Enums")
 	ESpStatus SpStatus = ESpStatus::ESS_Normal;
@@ -120,4 +129,8 @@ public:
 		Weapon = w;
 	}
 
+	FORCEINLINE void setOverlappingItem(AItem* w)
+	{
+		OverlappingItem = w;
+	}
 };

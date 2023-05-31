@@ -4,6 +4,7 @@
 #include "MainCharacter.h"
 
 #include "MainPlayerController.h"
+#include "Weapon.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
@@ -14,7 +15,7 @@
 // Sets default values
 AMainCharacter::AMainCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
@@ -35,14 +36,12 @@ AMainCharacter::AMainCharacter()
 
 	GameModeT = UGameplayStatics::GetGameMode(GetWorld());
 	GameMode = Cast<AMyGameModeBase>(GameModeT);
-    		
-
 }
 
 void AMainCharacter::SetMovementStatus(EMovementStatus status)
 {
 	MovementStatus = status;
-	if(MovementStatus == EMovementStatus::EMS_Sprinting)
+	if (MovementStatus == EMovementStatus::EMS_Sprinting)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = SprintingSpeed;
 	}
@@ -62,6 +61,29 @@ void AMainCharacter::ShiftKeyUp()
 	bShiftKeyDown = false;
 }
 
+void AMainCharacter::G_Up()
+{
+	bGiveWeapon = false;
+}
+
+void AMainCharacter::G_Down()
+{
+	bGiveWeapon = true;
+	if (OverlappingItem)
+	{
+		if (auto weapon = Cast<AWeapon>(OverlappingItem))
+		{
+			if(Weapon)
+			{
+				Weapon->Destroy();
+				Weapon=nullptr;
+			}
+			weapon->Equip(this);
+			setOverlappingItem(nullptr);
+		}
+	}
+}
+
 void AMainCharacter::SetSpStatus(ESpStatus status)
 {
 	SpStatus = status;
@@ -71,24 +93,23 @@ void AMainCharacter::SetSpStatus(ESpStatus status)
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
 
-	float DeltaSp = SpRate*DeltaTime;
-	switch(SpStatus)
+
+	float DeltaSp = SpRate * DeltaTime;
+	switch (SpStatus)
 	{
 	case ESpStatus::ESS_Normal:
-		if(bShiftKeyDown)
+		if (bShiftKeyDown)
 		{
-			if(SP - DeltaSp <= SpMinStatus)//低于一定百分比
+			if (SP - DeltaSp <= SpMinStatus) //低于一定百分比
 			{
-				SetSpStatus(ESpStatus::ESS_BelowMinimum);//改变状态
+				SetSpStatus(ESpStatus::ESS_BelowMinimum); //改变状态
 				SP -= DeltaSp;
 			}
 			else
@@ -97,12 +118,13 @@ void AMainCharacter::Tick(float DeltaTime)
 			}
 			SetMovementStatus(EMovementStatus::EMS_Sprinting);
 		}
-		else//没有按下shift:恢复
+		else //没有按下shift:恢复
 		{
-			if(SP + DeltaSp >= SP_Max)
+			if (SP + DeltaSp >= SP_Max)
 			{
 				SP = SP_Max;
-			}else
+			}
+			else
 			{
 				SP += DeltaSp;
 			}
@@ -110,12 +132,12 @@ void AMainCharacter::Tick(float DeltaTime)
 		}
 		break;
 	case ESpStatus::ESS_BelowMinimum:
-		if(bShiftKeyDown)
+		if (bShiftKeyDown)
 		{
-			if(SP - DeltaSp <= 0)//耗尽
+			if (SP - DeltaSp <= 0) //耗尽
 			{
 				SetSpStatus(ESpStatus::ESS_Exhausted);
-				SP=0;
+				SP = 0;
 				SetMovementStatus(EMovementStatus::EMS_Normal);
 			}
 			else
@@ -126,18 +148,19 @@ void AMainCharacter::Tick(float DeltaTime)
 		}
 		else
 		{
-			if(SP + DeltaSp >= SpMinStatus)
+			if (SP + DeltaSp >= SpMinStatus)
 			{
 				SP += DeltaSp;
-			}else
+			}
+			else
 			{
 				SP += DeltaSp;
-			}	
+			}
 			SetMovementStatus(EMovementStatus::EMS_Sprinting);
 		}
 		break;
 	case ESpStatus::ESS_Exhausted:
-		if(bShiftKeyDown)
+		if (bShiftKeyDown)
 		{
 			SP = 0;
 		}
@@ -149,20 +172,21 @@ void AMainCharacter::Tick(float DeltaTime)
 		SetMovementStatus(EMovementStatus::EMS_Normal);
 		break;
 	case ESpStatus::ESS_ExhaustedRecovering:
-		if(SP + DeltaSp >= SpMinStatus)
+		if (SP + DeltaSp >= SpMinStatus)
 		{
 			SetSpStatus(ESpStatus::ESS_Normal);
 			SP += DeltaSp;
-		}else
+		}
+		else
 		{
-			SP+=DeltaSp;
+			SP += DeltaSp;
 		}
 		SetMovementStatus(EMovementStatus::EMS_Normal);
 		break;
 	default:
 		;
 	}
-	GameMode->SetSPDelegate.Broadcast(SP/SP_Max);
+	GameMode->SetSPDelegate.Broadcast(SP / SP_Max);
 }
 
 // Called to bind functionality to input
@@ -170,12 +194,14 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("Jump",IE_Pressed,this,&ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump",IE_Released,this,&ACharacter::StopJumping);
-	PlayerInputComponent->BindAction("Sprint",IE_Pressed,this,&AMainCharacter::ShiftKeyDown);
-	PlayerInputComponent->BindAction("Sprint",IE_Released,this,&AMainCharacter::ShiftKeyUp);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMainCharacter::ShiftKeyDown);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AMainCharacter::ShiftKeyUp);
 
-	
+	PlayerInputComponent->BindAction("GiveWeapon", IE_Pressed, this, &AMainCharacter::G_Down);
+	PlayerInputComponent->BindAction("GiveWeapon", IE_Released, this, &AMainCharacter::G_Up);
+
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 
@@ -187,7 +213,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AMainCharacter::MoveForward(float value)
 {
-	if((Controller!=nullptr)&&(value!=0)){
+	if ((Controller != nullptr) && (value != 0))
+	{
 		const FRotator R = Controller->GetControlRotation();
 		const FRotator YawR(0, R.Yaw, 0);
 
@@ -214,7 +241,8 @@ void AMainCharacter::MoveForward(float value)
 
 void AMainCharacter::MoveRight(float value)
 {
-	if((Controller!=nullptr)&&(value!=0)){
+	if ((Controller != nullptr) && (value != 0))
+	{
 		const FRotator R = Controller->GetControlRotation();
 		const FRotator YawR(0, R.Yaw, 0);
 
@@ -240,7 +268,7 @@ float AMainCharacter::getCurrHP()
 
 float AMainCharacter::getCurrHP_Per()
 {
-	return HP/HP_Max;
+	return HP / HP_Max;
 }
 
 void AMainCharacter::setHP(float value)

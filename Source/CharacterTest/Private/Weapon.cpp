@@ -21,7 +21,8 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 	{
 		if(AMainCharacter *mainCharacter = Cast<AMainCharacter>(OtherActor))
 		{
-			Equip(mainCharacter);
+			//设置重叠Item
+			mainCharacter->setOverlappingItem(this);
     	}	
 	}
 	
@@ -31,10 +32,20 @@ void AWeapon::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	int32 OtherBodyIndex)
 {
 	Super::OnOverlapEnd(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
+	
+	if(OtherActor)
+	{
+		if(AMainCharacter *mainCharacter = Cast<AMainCharacter>(OtherActor))
+		{
+			//清除重叠Item
+			mainCharacter->setOverlappingItem(nullptr);
+		}	
+	}
 }
 
 void AWeapon::Equip(AMainCharacter* mainC)
 {
+	bRotate=false;
 	if(mainC)
 	{
 		skeletalMesh->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
@@ -43,6 +54,7 @@ void AWeapon::Equip(AMainCharacter* mainC)
 		if(const USkeletalMeshSocket* WeaponSocket = mainC->GetMesh()->GetSocketByName("WeaponSocket"))
 		{
 			WeaponSocket->AttachActor(this,mainC->GetMesh());
+			mainC->setWeapon(this);
 		}
 	}
 }
