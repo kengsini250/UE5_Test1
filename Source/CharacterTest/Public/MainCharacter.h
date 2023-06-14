@@ -63,6 +63,13 @@ public:
 	void G_Up();
 	void G_Down();
 
+	bool bAttacking = false;
+	void LMBUp();
+	void LMBDown();
+	void Attack();
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Anims")
+	class UAnimMontage* AttackMontage;
+
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="Enums")
 	ESpStatus SpStatus = ESpStatus::ESS_Normal;
 	void SetSpStatus(ESpStatus status);

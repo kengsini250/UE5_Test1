@@ -106,6 +106,35 @@ void AMainCharacter::G_Down()
 
 }
 
+void AMainCharacter::LMBUp()
+{
+	bAttacking = false;
+}
+
+void AMainCharacter::LMBDown()
+{
+	if(Weapon == nullptr)
+	{
+		//没武器
+	}
+	else
+	{
+		//有武器 
+		Attack();
+	}
+}
+
+void AMainCharacter::Attack()
+{
+	bAttacking = true;
+	UAnimInstance*AnimInstance=GetMesh()->GetAnimInstance();
+	if(AnimInstance)
+	{
+		AnimInstance->Montage_Play(AttackMontage);
+		AnimInstance->Montage_JumpToSection(FName("Attack1"),AttackMontage);
+	}
+}
+
 void AMainCharacter::SetSpStatus(ESpStatus status)
 {
 	SpStatus = status;
@@ -223,7 +252,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("GiveWeapon", IE_Pressed, this, &AMainCharacter::G_Down);
 	PlayerInputComponent->BindAction("GiveWeapon", IE_Released, this, &AMainCharacter::G_Up);
-
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMainCharacter::LMBDown);
+	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AMainCharacter::LMBUp);
+	
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 
