@@ -61,6 +61,7 @@ void AMainCharacter::ShiftKeyUp()
 	bShiftKeyDown = false;
 }
 
+<<<<<<< Updated upstream
 void AMainCharacter::G_Up()
 {
 	bGiveWeapon = false;
@@ -104,10 +105,16 @@ void AMainCharacter::G_Down()
 		}	
 	}
 
+=======
+void AMainCharacter::LMBDown()
+{
+	bAttacking = true;
+>>>>>>> Stashed changes
 }
 
 void AMainCharacter::LMBUp()
 {
+<<<<<<< Updated upstream
 		bLMBDown = false;
 }
 
@@ -162,6 +169,9 @@ void AMainCharacter::AttackEnd()
 	{
 		Attack();
 	}
+=======
+	bAttacking = false;
+>>>>>>> Stashed changes
 }
 
 void AMainCharacter::SetSpStatus(ESpStatus status)
@@ -274,6 +284,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+<<<<<<< Updated upstream
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMainCharacter::ShiftKeyDown);
@@ -283,6 +294,14 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("GiveWeapon", IE_Released, this, &AMainCharacter::G_Up);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMainCharacter::LMBDown);
 	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AMainCharacter::LMBUp);
+=======
+	PlayerInputComponent->BindAction("Jump",IE_Pressed,this,&ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump",IE_Released,this,&ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("Sprint",IE_Pressed,this,&AMainCharacter::ShiftKeyDown);
+	PlayerInputComponent->BindAction("Sprint",IE_Released,this,&AMainCharacter::ShiftKeyUp);
+	PlayerInputComponent->BindAction("Attack",IE_Pressed,this,&AMainCharacter::LMBDown);
+	PlayerInputComponent->BindAction("Attack",IE_Released,this,&AMainCharacter::LMBUp);
+>>>>>>> Stashed changes
 	
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
