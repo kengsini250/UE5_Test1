@@ -81,22 +81,21 @@ void AMainCharacter::G_Down()
 			}
 		}
 	}
+	//手里有武器
 	else
 	{
-		//手里有武器
+		//与武器重叠
 		if (OverlappingItem)
 		{
 			if (auto weapon = Cast<AWeapon>(OverlappingItem))
 			{
-				if(Weapon)
-				{
-					Weapon->Destroy();
-					Weapon=nullptr;
-				}
+				Weapon->Destroy();
 				weapon->Equip(this);
 				setOverlappingItem(nullptr);
 			}
-		}else
+		}
+		//不与武器重叠，清空武器
+		else
 		{
 			//清空手持武器
 			Weapon->Destroy();
@@ -161,7 +160,6 @@ void AMainCharacter::AttackEnd()
 	{
 		Attack();
 	}
-	bAttacking = false;
 }
 
 void AMainCharacter::SetSpStatus(ESpStatus status)

@@ -37,7 +37,7 @@ public:
 	class AGameModeBase* GameModeT; 
 	class AMyGameModeBase* GameMode;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "Items")
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Items")
 	class AWeapon* Weapon;
 
 	//捡武器-》与武器重叠
