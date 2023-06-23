@@ -58,7 +58,6 @@ public:
 	void ShiftKeyDown();
 	void ShiftKeyUp();
 
-<<<<<<< Updated upstream
 	//扔武器 G
 	bool bGiveWeapon = false;
 	void G_Up();
@@ -76,12 +75,6 @@ public:
 	void AttackEnd();
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Anims")
 	class UAnimMontage* AttackMontage;
-=======
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Anims")
-	bool bAttacking = false;
-	void LMBDown();
-	void LMBUp();
->>>>>>> Stashed changes
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="Enums")
 	ESpStatus SpStatus = ESpStatus::ESS_Normal;
