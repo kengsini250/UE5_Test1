@@ -63,10 +63,16 @@ public:
 	void G_Up();
 	void G_Down();
 
+	UPROPERTY(VisibleAnywhere)
+	bool bLMBDown = false;
+	UPROPERTY(VisibleAnywhere)
 	bool bAttacking = false;
 	void LMBUp();
 	void LMBDown();
 	void Attack();
+	//蓝图调用
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Anims")
 	class UAnimMontage* AttackMontage;
 

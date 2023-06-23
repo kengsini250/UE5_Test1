@@ -108,30 +108,59 @@ void AMainCharacter::G_Down()
 
 void AMainCharacter::LMBUp()
 {
-	bAttacking = false;
+		bLMBDown = false;
 }
 
 void AMainCharacter::LMBDown()
 {
+	bLMBDown = true;
 	if(Weapon == nullptr)
 	{
 		//没武器
 	}
 	else
 	{
-		//有武器 
+		//有武器
 		Attack();
 	}
 }
 
 void AMainCharacter::Attack()
 {
-	bAttacking = true;
-	UAnimInstance*AnimInstance=GetMesh()->GetAnimInstance();
-	if(AnimInstance)
+	if(!bAttacking)
 	{
-		AnimInstance->Montage_Play(AttackMontage);
-		AnimInstance->Montage_JumpToSection(FName("Attack1"),AttackMontage);
+		bAttacking = true;
+		UAnimInstance*AnimInstance=GetMesh()->GetAnimInstance();
+		if(AnimInstance)
+		{
+			//随机播放动画
+			int32 mode = FMath::RandRange(0,1);
+			switch(mode)
+			{
+			case 0:
+				AnimInstance->Montage_Play(AttackMontage,2.0f);
+				AnimInstance->Montage_JumpToSection(FName("Attack1"),AttackMontage);
+				break;
+			case 1:
+				AnimInstance->Montage_Play(AttackMontage,1.5f);
+				AnimInstance->Montage_JumpToSection(FName("Attack2"),AttackMontage);
+				break;
+			default:
+					;
+			}
+
+		}
+	}
+
+}
+
+void AMainCharacter::AttackEnd()
+{
+	bAttacking = false;
+	//连续攻击
+	if(bLMBDown)
+	{
+		Attack();
 	}
 }
 
@@ -266,7 +295,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AMainCharacter::MoveForward(float value)
 {
-	if ((Controller != nullptr) && (value != 0))
+	if ((Controller != nullptr) && (value != 0) && (!bAttacking))
 	{
 		const FRotator R = Controller->GetControlRotation();
 		const FRotator YawR(0, R.Yaw, 0);
@@ -294,7 +323,7 @@ void AMainCharacter::MoveForward(float value)
 
 void AMainCharacter::MoveRight(float value)
 {
-	if ((Controller != nullptr) && (value != 0))
+	if ((Controller != nullptr) && (value != 0)&&(!bAttacking))
 	{
 		const FRotator R = Controller->GetControlRotation();
 		const FRotator YawR(0, R.Yaw, 0);
