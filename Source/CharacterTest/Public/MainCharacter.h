@@ -41,7 +41,7 @@ public:
 	class AWeapon* Weapon;
 
 	//捡武器-》与武器重叠
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "Items")
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Items")
 	class AItem* OverlappingItem;
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="Enums")

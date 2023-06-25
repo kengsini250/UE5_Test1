@@ -77,36 +77,32 @@ void AMainCharacter::G_Down()
 			if (auto weapon = Cast<AWeapon>(OverlappingItem))
 			{
 				weapon->Equip(this);
-				setOverlappingItem(nullptr);
+				OverlappingItem = nullptr;
 			}
 		}
 	}
 	//手里有武器
 	else
 	{
+		//清空手持武器
+		Weapon->Destroy();
+		Weapon = nullptr;
+		
 		//与武器重叠
 		if (OverlappingItem)
 		{
 			if (auto weapon = Cast<AWeapon>(OverlappingItem))
 			{
-				Weapon->Destroy();
 				weapon->Equip(this);
 				setOverlappingItem(nullptr);
 			}
 		}
-		//不与武器重叠，清空武器
-		else
-		{
-			//清空手持武器
-			Weapon->Destroy();
-			Weapon=nullptr;
-		}	
 	}
 }
 
 void AMainCharacter::LMBUp()
 {
-		bLMBDown = false;
+	bLMBDown = false;
 }
 
 void AMainCharacter::LMBDown()

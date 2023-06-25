@@ -26,6 +26,7 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 			{
 				//自动捡起武器
 				Equip(mainCharacter);
+				mainCharacter->setOverlappingItem(nullptr);
 			}
 			else
 			{
