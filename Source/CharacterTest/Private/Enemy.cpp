@@ -75,6 +75,6 @@ void AEnemy::BoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 void AEnemy::BoxOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-			bFollow = true;
+			bFollow = false;
 }
 
