@@ -31,10 +31,6 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if(bFollow && mainCharacter)
-	{
-		MoveToTarget(mainCharacter);
-	}
 }
 
 // Called to bind functionality to input
@@ -63,11 +59,10 @@ void AEnemy::BoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 	if(OtherActor)
 	{
-		mainCharacter = Cast<AMainCharacter>(OtherActor);
+		auto mainCharacter = Cast<AMainCharacter>(OtherActor);
 		if(mainCharacter)
 		{
-			//MoveToTarget(self);
-			bFollow = true;
+			MoveToTarget(mainCharacter);
 		}
 	}
 }
@@ -75,6 +70,5 @@ void AEnemy::BoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 void AEnemy::BoxOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-			bFollow = false;
 }
 
