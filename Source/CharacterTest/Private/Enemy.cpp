@@ -31,7 +31,10 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if(bFollow && mainCharacter)
+	{
+		MoveToTarget(mainCharacter);
+	}
 }
 
 // Called to bind functionality to input
@@ -44,7 +47,15 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy::MoveToTarget(AMainCharacter* self)
 {
 	SetMovement(EEnemyMovementStatus::EMS_MoveToTarget);
-	UE_LOG(LogTemp,Warning,TEXT("Move To Target"));
+	if(AIController)
+	{
+		FAIMoveRequest re;
+		re.SetGoalActor(self);
+		re.SetAcceptanceRadius(50.0f);
+		FNavPathSharedPtr ptr;
+
+		AIController->MoveTo(re,&ptr);
+	}
 }
 
 void AEnemy::BoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -52,10 +63,11 @@ void AEnemy::BoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 	if(OtherActor)
 	{
-		auto self = Cast<AMainCharacter>(OtherActor);
-		if(self)
+		mainCharacter = Cast<AMainCharacter>(OtherActor);
+		if(mainCharacter)
 		{
-			MoveToTarget(self);
+			//MoveToTarget(self);
+			bFollow = true;
 		}
 	}
 }
@@ -63,5 +75,6 @@ void AEnemy::BoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 void AEnemy::BoxOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+			bFollow = true;
 }
 

@@ -34,6 +34,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="AI")
 	class AAIController* AIController;
+	bool bFollow = false;
+	class AMainCharacter* mainCharacter;
 	
 	//索敌范围-box
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="AI")
