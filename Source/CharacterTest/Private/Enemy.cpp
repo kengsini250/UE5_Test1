@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "MainCharacter.h"
 #include "Components/BoxComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -16,6 +17,8 @@ AEnemy::AEnemy()
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("FindEnemyBox"));
 	Box->SetupAttachment(GetRootComponent());
 	Box->SetBoxExtent(FVector(300,300,100));
+
+	GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
 }
 
 // Called when the game starts or when spawned

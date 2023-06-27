@@ -40,7 +40,8 @@ public:
 	class UBoxComponent* Box;
 	//命中判定-圆柱
 	
-
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Running")
+	float RunningSpeed = 650;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
