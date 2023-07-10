@@ -38,7 +38,9 @@ public:
 	//索敌范围-box
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="AI")
 	class UBoxComponent* Box;
-	//命中判定-圆柱
+	//命中判定-胶囊体
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="AI")
+	class UCapsuleComponent* HitCapsule;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Running")
 	float RunningSpeed = 650;

@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "MainCharacter.h"
 #include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -17,6 +18,11 @@ AEnemy::AEnemy()
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("FindEnemyBox"));
 	Box->SetupAttachment(GetRootComponent());
 	Box->SetBoxExtent(FVector(300,300,100));
+
+	HitCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitCapsule"));
+	HitCapsule->SetupAttachment(GetRootComponent());
+	HitCapsule->SetCapsuleRadius(70);
+	HitCapsule->SetCapsuleHalfHeight(110);
 
 	GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
 }
