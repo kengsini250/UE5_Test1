@@ -34,6 +34,8 @@ void AEnemy::BeginPlay()
 	AIController = Cast<AAIController>(GetController());
 	Box->OnComponentBeginOverlap.AddDynamic(this,&AEnemy::BoxOnOverlapBegin);
 	Box->OnComponentEndOverlap.AddDynamic(this,&AEnemy::BoxOnOverlapEnd);
+	HitCapsule->OnComponentBeginOverlap.AddDynamic(this,&AEnemy::HitCapsuleOnOverlapBegin);
+	HitCapsule->OnComponentEndOverlap.AddDynamic(this,&AEnemy::HitCapsuleOnOverlapEnd);
 }
 
 // Called every frame
@@ -56,7 +58,7 @@ void AEnemy::MoveToTarget(AMainCharacter* self)
 	{
 		FAIMoveRequest re;
 		re.SetGoalActor(self);
-		re.SetAcceptanceRadius(50.0f);
+		re.SetAcceptanceRadius(10.0f);
 		FNavPathSharedPtr ptr;
 
 		AIController->MoveTo(re,&ptr);
@@ -79,5 +81,38 @@ void AEnemy::BoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 void AEnemy::BoxOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	if(OtherActor)
+	{
+		if(auto mainCharactor = Cast<AMainCharacter>(OtherActor))
+		{
+			SetMovement(EEnemyMovementStatus::EMS_Idle);
+			AIController->StopMovement();
+		}
+	}
+}
+
+void AEnemy::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor)
+	{
+		if(auto mainCharactor = Cast<AMainCharacter>(OtherActor))
+		{
+			SetMovement(EEnemyMovementStatus::EMS_Attacking);
+		}
+	}
+}
+
+void AEnemy::HitCapsuleOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if(OtherActor)
+	{
+		if(auto mainCharactor = Cast<AMainCharacter>(OtherActor))
+		{
+			SetMovement(EEnemyMovementStatus::EMS_Idle);
+			MoveToTarget(mainCharactor);
+		}
+	}
 }
 
