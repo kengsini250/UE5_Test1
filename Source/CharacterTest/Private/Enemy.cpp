@@ -51,13 +51,13 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void AEnemy::MoveToTarget(AMainCharacter* self)
+void AEnemy::MoveToTarget(AMainCharacter* s)
 {
 	SetMovement(EEnemyMovementStatus::EMS_MoveToTarget);
 	if(AIController)
 	{
 		FAIMoveRequest re;
-		re.SetGoalActor(self);
+		re.SetGoalActor(s);
 		re.SetAcceptanceRadius(10.0f);
 		FNavPathSharedPtr ptr;
 
@@ -98,6 +98,8 @@ void AEnemy::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 	{
 		if(auto mainCharactor = Cast<AMainCharacter>(OtherActor))
 		{
+			HitTarget = mainCharactor;
+			bOverlappingHitCapsule = true;
 			SetMovement(EEnemyMovementStatus::EMS_Attacking);
 		}
 	}
@@ -110,8 +112,10 @@ void AEnemy::HitCapsuleOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 	{
 		if(auto mainCharactor = Cast<AMainCharacter>(OtherActor))
 		{
+			bOverlappingHitCapsule = false;
 			SetMovement(EEnemyMovementStatus::EMS_Idle);
 			MoveToTarget(mainCharactor);
+			HitTarget = nullptr;
 		}
 	}
 }

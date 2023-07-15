@@ -55,7 +55,12 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void MoveToTarget(class AMainCharacter* self);
+	UFUNCTION(BlueprintCallable)
+	void MoveToTarget(class AMainCharacter* s);
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="AI")
+	bool bOverlappingHitCapsule = false;
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="AI")
+	AMainCharacter* HitTarget;
 	
 	UFUNCTION()
 	void BoxOnOverlapBegin(
