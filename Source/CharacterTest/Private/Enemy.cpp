@@ -8,6 +8,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -25,6 +26,19 @@ AEnemy::AEnemy()
 	HitCapsule->SetCapsuleHalfHeight(110);
 
 	GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
+}
+
+void AEnemy::BloodParticles()
+{
+	if(HitParticles)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitParticles,
+			GetActorLocation(),
+			FRotator(0),
+			false);
+	}
 }
 
 // Called when the game starts or when spawned

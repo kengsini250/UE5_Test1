@@ -44,6 +44,21 @@ public:
 	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Running")
 	float RunningSpeed = 650;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
+	float HP_Max = 100.0f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
+	float HP = 100.0f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
+	float Damage = 10.0f;
+
+	//流血粒子特效
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
+	class UParticleSystem* HitParticles;
+	
+	void BloodParticles();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

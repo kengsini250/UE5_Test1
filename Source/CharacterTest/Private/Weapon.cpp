@@ -3,13 +3,25 @@
 
 #include "Weapon.h"
 
+#include "Enemy.h"
 #include "MainCharacter.h"
+#include "Components/CapsuleComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+
+void AWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+	HitCapsule->OnComponentBeginOverlap.AddDynamic(this,&AWeapon::HitCapsuleOnOverlapBegin);
+	HitCapsule->OnComponentEndOverlap.AddDynamic(this,&AWeapon::HitCapsuleOnOverlapEnd);
+}
 
 AWeapon::AWeapon()
 {
 	skeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
-	skeletalMesh->SetupAttachment(GetRootComponent()); 
+	skeletalMesh->SetupAttachment(GetRootComponent());
+
+	HitCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitCapsule"));
+	HitCapsule->SetupAttachment(GetRootComponent());
 }
 
 void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -68,4 +80,21 @@ void AWeapon::Equip(AMainCharacter* mainC)
 			mainC->setWeapon(this);
 		}
 	}
+}
+
+void AWeapon::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor)
+	{
+		if(auto Enemy = Cast<AEnemy>(OtherActor))
+		{
+			Enemy->BloodParticles();
+		}
+	}
+}
+
+void AWeapon::HitCapsuleOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
 }
