@@ -58,7 +58,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
 	class UParticleSystem* HitParticles;
 	
-	void BloodParticles();
+	void BloodParticles(const FVector& pos);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

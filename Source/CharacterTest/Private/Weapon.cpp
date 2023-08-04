@@ -5,6 +5,7 @@
 
 #include "Enemy.h"
 #include "MainCharacter.h"
+#include "Chaos/AABBTree.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 
@@ -13,6 +14,11 @@ void AWeapon::BeginPlay()
 	Super::BeginPlay();
 	HitCapsule->OnComponentBeginOverlap.AddDynamic(this,&AWeapon::HitCapsuleOnOverlapBegin);
 	HitCapsule->OnComponentEndOverlap.AddDynamic(this,&AWeapon::HitCapsuleOnOverlapEnd);
+	
+	HitCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	HitCapsule->SetCollisionObjectType(ECC_WorldDynamic);
+	HitCapsule->SetCollisionResponseToAllChannels(ECR_Ignore);
+	HitCapsule->SetCollisionResponseToChannel(ECC_Pawn,ECR_Overlap);
 }
 
 AWeapon::AWeapon()
@@ -89,7 +95,12 @@ void AWeapon::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 	{
 		if(auto Enemy = Cast<AEnemy>(OtherActor))
 		{
-			Enemy->BloodParticles();
+			const USkeletalMeshSocket* hitParticlesSocket = skeletalMesh->GetSocketByName("HitParticlesSocket");
+			if(hitParticlesSocket)
+			{
+				FVector hitParticlesSocketPos = hitParticlesSocket->GetSocketLocation(skeletalMesh);
+				Enemy->BloodParticles(hitParticlesSocketPos);
+			}
 		}
 	}
 }
@@ -97,4 +108,14 @@ void AWeapon::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 void AWeapon::HitCapsuleOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+}
+
+void AWeapon::CollisionON()
+{
+	HitCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+}
+
+void AWeapon::CollisionOFF()
+{
+	HitCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

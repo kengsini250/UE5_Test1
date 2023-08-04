@@ -28,14 +28,14 @@ AEnemy::AEnemy()
 	GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
 }
 
-void AEnemy::BloodParticles()
+void AEnemy::BloodParticles(const FVector& pos)
 {
 	if(HitParticles)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(
 			GetWorld(),
 			HitParticles,
-			GetActorLocation(),
+			pos,
 			FRotator(0),
 			false);
 	}

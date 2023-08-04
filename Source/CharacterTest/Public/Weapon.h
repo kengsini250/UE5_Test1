@@ -58,4 +58,10 @@ public:
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, 
 		int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintCallable)
+	void CollisionON();
+	
+	UFUNCTION(BlueprintCallable)
+	void CollisionOFF();
 };
