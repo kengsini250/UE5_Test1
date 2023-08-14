@@ -8,6 +8,8 @@
 #include "Chaos/AABBTree.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 void AWeapon::BeginPlay()
 {
@@ -101,6 +103,10 @@ void AWeapon::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 				FVector hitParticlesSocketPos = hitParticlesSocket->GetSocketLocation(skeletalMesh);
 				Enemy->BloodParticles(hitParticlesSocketPos);
 			}
+			if(Enemy->HitSound)
+			{
+				UGameplayStatics::PlaySound2D(this,Enemy->HitSound);
+			}
 		}
 	}
 }
@@ -113,6 +119,7 @@ void AWeapon::HitCapsuleOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, A
 void AWeapon::CollisionON()
 {
 	HitCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	UGameplayStatics::PlaySound2D(this,SwingSound);
 }
 
 void AWeapon::CollisionOFF()

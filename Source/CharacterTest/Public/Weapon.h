@@ -26,6 +26,9 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Item | Hit")
 	float Damage = 30.0f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Item | Sound")
+	class USoundCue *SwingSound;
 	
 	virtual void OnOverlapBegin(
 		UPrimitiveComponent* OverlappedComponent,

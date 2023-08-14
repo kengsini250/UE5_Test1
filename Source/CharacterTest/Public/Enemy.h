@@ -53,6 +53,9 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
 	float Damage = 10.0f;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Item | Sound")
+	class USoundCue *HitSound;
 
 	//流血粒子特效
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")

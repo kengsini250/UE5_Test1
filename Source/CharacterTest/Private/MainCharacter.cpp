@@ -11,6 +11,7 @@
 #include "CharacterTest/MyGameModeBase.h"
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
