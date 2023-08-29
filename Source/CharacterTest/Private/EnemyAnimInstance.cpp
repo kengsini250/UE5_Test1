@@ -4,6 +4,7 @@
 #include "EnemyAnimInstance.h"
 
 #include "Enemy.h"
+#include "Kismet/GameplayStatics.h"
 
 void UEnemyAnimInstance::NativeInitializeAnimation()
 {
