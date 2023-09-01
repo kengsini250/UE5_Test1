@@ -57,6 +57,13 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Item | Sound")
 	class USoundCue *HitSound;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Item | Sound")
+	USoundCue *SwingSound;
+
+	//武器与角色碰撞->攻击
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Item | Hit")
+	class UCapsuleComponent* WeaponCollision;
+
 	//流血粒子特效
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
 	class UParticleSystem* HitParticles;
@@ -112,4 +119,37 @@ public:
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, 
 		int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void WeaponOnOverlapBegin(
+	UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult & SweepResult);
+ 
+	UFUNCTION()
+	void WeaponOnOverlapEnd(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, 
+		int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintCallable)
+	void AttackCollisionStart();
+	
+	UFUNCTION(BlueprintCallable)
+	void AttackCollisionEnd();
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Anims")
+	class UAnimMontage* AttackMontage;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bAttacking = false;
+	
+	void Attack();
+	
+	UFUNCTION(BlueprintCallable)
+	void EnemyAttackEnd();
 };

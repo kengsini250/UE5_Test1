@@ -124,6 +124,14 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Player State")
 	float SpMinStatus = 30;
+
+	//流血粒子特效
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Particles")
+	class UParticleSystem* HitParticles;
+	
+	//被击音效
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Item | Sound")
+	class USoundCue *HitSound;
 	
 protected:
 	// Called when the game starts or when spawned

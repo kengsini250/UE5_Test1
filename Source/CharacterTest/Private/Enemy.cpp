@@ -7,9 +7,11 @@
 #include "MainCharacter.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Navigation/PathFollowingComponent.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -25,6 +27,9 @@ AEnemy::AEnemy()
 	HitCapsule->SetupAttachment(GetRootComponent());
 	HitCapsule->SetCapsuleRadius(70);
 	HitCapsule->SetCapsuleHalfHeight(110);
+
+	WeaponCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitCollision"));
+	WeaponCollision->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale,FName("EnemyWeaponSlot"));
 
 	GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
 }
@@ -51,6 +56,13 @@ void AEnemy::BeginPlay()
 	Box->OnComponentEndOverlap.AddDynamic(this,&AEnemy::BoxOnOverlapEnd);
 	HitCapsule->OnComponentBeginOverlap.AddDynamic(this,&AEnemy::HitCapsuleOnOverlapBegin);
 	HitCapsule->OnComponentEndOverlap.AddDynamic(this,&AEnemy::HitCapsuleOnOverlapEnd);
+	WeaponCollision->OnComponentBeginOverlap.AddDynamic(this,&AEnemy::WeaponOnOverlapBegin);
+	WeaponCollision->OnComponentEndOverlap.AddDynamic(this,&AEnemy::WeaponOnOverlapEnd);
+
+	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	WeaponCollision->SetCollisionObjectType(ECC_WorldDynamic);
+	WeaponCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+	WeaponCollision->SetCollisionResponseToChannel(ECC_Pawn,ECR_Overlap);
 }
 
 // Called every frame
@@ -115,7 +127,7 @@ void AEnemy::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 		{
 			HitTarget = mainCharactor;
 			bOverlappingHitCapsule = true;
-			SetMovement(EEnemyMovementStatus::EMS_Attacking);
+			Attack();
 		}
 	}
 }
@@ -132,6 +144,78 @@ void AEnemy::HitCapsuleOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 			MoveToTarget(mainCharactor);
 			HitTarget = nullptr;
 		}
+	}
+}
+
+void AEnemy::WeaponOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor)
+	{
+		if(auto mainC = Cast<AMainCharacter>(OtherActor))
+		{
+			if(mainC->HitParticles)
+			{
+				const USkeletalMeshSocket* EnemyWeaponSlot = GetMesh()->GetSocketByName("EnemyWeaponSlot");
+				if(EnemyWeaponSlot)
+				{
+					FVector Pos = EnemyWeaponSlot->GetSocketLocation(GetMesh());
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),mainC->HitParticles,Pos,FRotator(0),false);
+				}
+			}
+			if(mainC->HitSound)
+			{
+				UGameplayStatics::PlaySound2D(this,mainC->HitSound);
+			}	
+		}
+	}
+}
+
+void AEnemy::WeaponOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+}
+
+void AEnemy::AttackCollisionStart()
+{
+	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	UGameplayStatics::PlaySound2D(this,SwingSound);
+}
+
+void AEnemy::AttackCollisionEnd()
+{
+	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AEnemy::Attack()
+{
+	if(AIController)
+	{
+		AIController->StopMovement();
+		SetMovement(EEnemyMovementStatus::EMS_Attacking);
+	}
+	if(!bAttacking)
+	{
+		bAttacking=true;
+		UAnimInstance*AnimInstance=GetMesh()->GetAnimInstance();
+		if(AnimInstance)
+		{
+			AnimInstance->Montage_Play(AttackMontage,2.0f);
+			AnimInstance->Montage_JumpToSection(FName("Attack"),AttackMontage);
+		}
+	}
+	if(SwingSound)
+	{
+		UGameplayStatics::PlaySound2D(this,SwingSound);
+	}
+}
+
+void AEnemy::EnemyAttackEnd()
+{
+	bAttacking = false;
+	if(bOverlappingHitCapsule)
+	{
+		Attack();
 	}
 }
 
