@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "Sound/SoundCue.h"
+#include "Components/SceneComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -29,7 +30,7 @@ AEnemy::AEnemy()
 	HitCapsule->SetCapsuleHalfHeight(110);
 
 	WeaponCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitCollision"));
-	WeaponCollision->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale,FName("EnemyWeaponSlot"));
+	WeaponCollision->SetupAttachment(GetMesh(),FName("EnemyWeaponSlot"));
 
 	GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
 }

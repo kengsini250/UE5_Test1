@@ -62,7 +62,7 @@ public:
 
 	//武器与角色碰撞->攻击
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Item | Hit")
-	class UCapsuleComponent* WeaponCollision;
+	UCapsuleComponent* WeaponCollision;
 
 	//流血粒子特效
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
