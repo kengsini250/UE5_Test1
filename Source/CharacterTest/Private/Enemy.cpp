@@ -190,6 +190,7 @@ void AEnemy::AttackCollisionEnd()
 
 void AEnemy::Attack()
 {
+		bAttacking=false;
 	if(AIController)
 	{
 		AIController->StopMovement();
