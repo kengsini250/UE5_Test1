@@ -69,6 +69,11 @@ public:
 	class UParticleSystem* HitParticles;
 	
 	void BloodParticles(const FVector& pos);
+
+	FTimerHandle AttackTimer;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
+	float AttackTime = 3;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -144,6 +144,7 @@ void AEnemy::HitCapsuleOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 			SetMovement(EEnemyMovementStatus::EMS_Idle);
 			MoveToTarget(mainCharactor);
 			HitTarget = nullptr;
+			GetWorldTimerManager().ClearTimer(AttackTimer);
 		}
 	}
 }
@@ -217,7 +218,7 @@ void AEnemy::EnemyAttackEnd()
 	bAttacking = false;
 	if(bOverlappingHitCapsule)
 	{
-		Attack();
+		GetWorldTimerManager().SetTimer(AttackTimer,this,&AEnemy::Attack,AttackTime);
 	}
 }
 
