@@ -132,7 +132,14 @@ public:
 	//被击音效
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Item | Sound")
 	class USoundCue *HitSound;
-	
+
+	float InterpSpeed = 15;
+	bool bInterpToEnemy = false;
+	void SetInterpToEnemy(bool Interp);
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,category="Play State")
+	class AEnemy*InterpTarget;
+	FORCEINLINE void SetInterpTarget(AEnemy* e){InterpTarget = e;}
+	FRotator GetLookAtRotatorYaw(FVector target);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

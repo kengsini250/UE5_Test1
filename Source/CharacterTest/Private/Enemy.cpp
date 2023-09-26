@@ -126,6 +126,7 @@ void AEnemy::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 	{
 		if(auto mainCharactor = Cast<AMainCharacter>(OtherActor))
 		{
+			mainCharactor->SetInterpTarget(this);
 			HitTarget = mainCharactor;
 			bOverlappingHitCapsule = true;
 			Attack();
@@ -140,6 +141,7 @@ void AEnemy::HitCapsuleOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 	{
 		if(auto mainCharactor = Cast<AMainCharacter>(OtherActor))
 		{
+			mainCharactor->SetInterpTarget(nullptr);
 			bOverlappingHitCapsule = false;
 			SetMovement(EEnemyMovementStatus::EMS_Idle);
 			MoveToTarget(mainCharactor);

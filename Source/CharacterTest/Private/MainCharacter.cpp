@@ -3,6 +3,7 @@
 
 #include "MainCharacter.h"
 
+#include "Enemy.h"
 #include "MainPlayerController.h"
 #include "Weapon.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -11,6 +12,7 @@
 #include "CharacterTest/MyGameModeBase.h"
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Sound/SoundCue.h"
 
 // Sets default values
@@ -125,6 +127,9 @@ void AMainCharacter::Attack()
 	if(!bAttacking)
 	{
 		bAttacking = true;
+		SetInterpToEnemy(true);
+
+		
 		UAnimInstance*AnimInstance=GetMesh()->GetAnimInstance();
 		if(AnimInstance)
 		{
@@ -152,6 +157,7 @@ void AMainCharacter::Attack()
 void AMainCharacter::AttackEnd()
 {
 	bAttacking = false;
+	SetInterpToEnemy(false);
 	//连续攻击
 	if(bLMBDown)
 	{
@@ -162,6 +168,18 @@ void AMainCharacter::AttackEnd()
 void AMainCharacter::SetSpStatus(ESpStatus status)
 {
 	SpStatus = status;
+}
+
+void AMainCharacter::SetInterpToEnemy(bool Interp)
+{
+	bInterpToEnemy = Interp;
+}
+
+FRotator AMainCharacter::GetLookAtRotatorYaw(FVector target)
+{
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),target);
+	FRotator LookAtRotationYaw(0,LookAtRotation.Yaw,0);
+	return LookAtRotationYaw;
 }
 
 // Called when the game starts or when spawned
@@ -262,6 +280,13 @@ void AMainCharacter::Tick(float DeltaTime)
 		;
 	}
 	GameMode->SetSPDelegate.Broadcast(SP / SP_Max);
+
+	if(bInterpToEnemy && InterpTarget)
+	{
+		FRotator LookAtYaw = GetLookAtRotatorYaw(InterpTarget->GetActorLocation());
+		FRotator InterpRotation = FMath::RInterpTo(GetActorRotation(),LookAtYaw,DeltaTime,InterpSpeed);
+		SetActorRotation(InterpRotation);
+	}
 }
 
 // Called to bind functionality to input
