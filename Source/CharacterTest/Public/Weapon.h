@@ -67,4 +67,13 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void CollisionOFF();
+
+	//伤害机制
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
+	TSubclassOf<UDamageType> DamageTypeClass;
+	//伤害机制触发对象
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
+	AController *UseWeaponTarget;
+
+	FORCEINLINE void setUseWeaponTarget(AController*c){UseWeaponTarget = c;}
 };

@@ -92,6 +92,38 @@ void AEnemy::MoveToTarget(AMainCharacter* s)
 	}
 }
 
+void AEnemy::Die()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Play(AttackMontage, 2.0f);
+		AnimInstance->Montage_JumpToSection(FName("Death"), AttackMontage);
+	}
+	SetMovement(EEnemyMovementStatus::EMS_Death);
+
+	Box->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	HitCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+float AEnemy::TakeDamage(float _Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+                         AActor* DamageCauser)
+{
+	if(HP - _Damage <= 0)
+	{
+		HP-=_Damage;
+		Die();
+	}
+	else
+	{
+		HP-=_Damage;
+	}
+
+	return _Damage;
+}
+
 void AEnemy::BoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                const FHitResult& SweepResult)
@@ -175,6 +207,10 @@ void AEnemy::WeaponOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 			if (mainC->HitSound)
 			{
 				UGameplayStatics::PlaySound2D(this, mainC->HitSound);
+			}
+			if(DamageTypeClass)
+			{
+				UGameplayStatics::ApplyDamage(mainC,Damage,AIController,this,DamageTypeClass);
 			}
 		}
 	}

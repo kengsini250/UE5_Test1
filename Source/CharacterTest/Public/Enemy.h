@@ -12,6 +12,7 @@ enum class EEnemyMovementStatus : uint8
 	EMS_Idle UMETA(DeplayName="Idle"),
 	EMS_MoveToTarget UMETA(DeplayName="MoveToTarget"),
 	EMS_Attacking UMETA(DeplayName="Attacking"),
+	EMS_Death UMETA(DeplayName="Death"),
 	EMS_MAX
 };
 
@@ -73,6 +74,10 @@ public:
 	FTimerHandle AttackTimer;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
 	float AttackTime = 3;
+
+	//伤害机制
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
+	TSubclassOf<UDamageType> DamageTypeClass;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -91,6 +96,10 @@ public:
 	bool bOverlappingHitCapsule = false;
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="AI")
 	AMainCharacter* HitTarget;
+
+	void Die();
+	
+	virtual float TakeDamage(float _Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	
 	UFUNCTION()
 	void BoxOnOverlapBegin(

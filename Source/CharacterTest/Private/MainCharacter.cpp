@@ -154,6 +154,16 @@ void AMainCharacter::Attack()
 
 }
 
+void AMainCharacter::Die()
+{
+	UAnimInstance*AnimInstance=GetMesh()->GetAnimInstance();
+	if(AnimInstance)
+	{
+		AnimInstance->Montage_Play(AttackMontage,2.0f);
+		AnimInstance->Montage_JumpToSection(FName("Death"),AttackMontage);
+	}
+}
+
 void AMainCharacter::AttackEnd()
 {
 	bAttacking = false;
@@ -311,6 +321,17 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("TurnRate", this, &AMainCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AMainCharacter::LookUpAtRate);
+}
+
+float AMainCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+                                 AActor* DamageCauser)
+{
+	setHP(getCurrHP()-Damage);
+	if(getCurrHP()<=0)
+	{
+		Die();
+	}
+	return Damage;
 }
 
 void AMainCharacter::MoveForward(float value)

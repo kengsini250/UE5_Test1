@@ -79,6 +79,8 @@ void AWeapon::Equip(AMainCharacter* mainC)
 	bRotate=false;
 	if(mainC)
 	{
+		setUseWeaponTarget(mainC->GetController());
+		
 		skeletalMesh->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
 		skeletalMesh->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);
 		skeletalMesh->SetSimulatePhysics(false);
@@ -106,6 +108,10 @@ void AWeapon::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 			if(Enemy->HitSound)
 			{
 				UGameplayStatics::PlaySound2D(this,Enemy->HitSound);
+			}
+			if(DamageTypeClass)
+			{
+				UGameplayStatics::ApplyDamage(Enemy,Damage,UseWeaponTarget,this,DamageTypeClass);
 			}
 		}
 	}
