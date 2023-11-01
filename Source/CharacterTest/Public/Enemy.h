@@ -166,4 +166,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void EnemyAttackEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void DeathEnd();
 };
