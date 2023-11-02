@@ -12,7 +12,7 @@ enum class EEnemyMovementStatus : uint8
 	EMS_Idle UMETA(DeplayName="Idle"),
 	EMS_MoveToTarget UMETA(DeplayName="MoveToTarget"),
 	EMS_Attacking UMETA(DeplayName="Attacking"),
-	EMS_Death UMETA(DeplayName="Death"),
+	EMS_Dead UMETA(DeplayName="Dead"),
 	EMS_MAX
 };
 
@@ -31,6 +31,10 @@ public:
 	FORCEINLINE void SetMovement(EEnemyMovementStatus status)
 	{
 		EnemyMovementStatus = status;
+	}
+	FORCEINLINE EEnemyMovementStatus GetMovementStatus()
+	{
+		return EnemyMovementStatus;
 	}
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="AI")
@@ -78,6 +82,12 @@ public:
 	//伤害机制
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
 	TSubclassOf<UDamageType> DamageTypeClass;
+
+	FTimerHandle DeathDestroyTimer;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
+	float DeathDestroyDelay = 2;
+
+	void EnemyDestroy();
 	
 protected:
 	// Called when the game starts or when spawned
@@ -169,4 +179,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DeathEnd();
+
+	bool Alive();
 };

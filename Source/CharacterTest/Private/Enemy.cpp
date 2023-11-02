@@ -48,6 +48,11 @@ void AEnemy::BloodParticles(const FVector& pos)
 	}
 }
 
+void AEnemy::EnemyDestroy()
+{
+	Destroy();
+}
+
 // Called when the game starts or when spawned
 void AEnemy::BeginPlay()
 {
@@ -100,7 +105,7 @@ void AEnemy::Die()
 		AnimInstance->Montage_Play(AttackMontage, 2.0f);
 		AnimInstance->Montage_JumpToSection(FName("Death"), AttackMontage);
 	}
-	SetMovement(EEnemyMovementStatus::EMS_Death);
+	SetMovement(EEnemyMovementStatus::EMS_Dead);
 
 	Box->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -111,14 +116,14 @@ void AEnemy::Die()
 float AEnemy::TakeDamage(float _Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
                          AActor* DamageCauser)
 {
-	if(HP - _Damage <= 0)
+	if (HP - _Damage <= 0)
 	{
-		HP-=_Damage;
+		HP -= _Damage;
 		Die();
 	}
 	else
 	{
-		HP-=_Damage;
+		HP -= _Damage;
 	}
 
 	return _Damage;
@@ -128,7 +133,7 @@ void AEnemy::BoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                const FHitResult& SweepResult)
 {
-	if (OtherActor)
+	if (OtherActor && Alive())
 	{
 		auto mainCharacter = Cast<AMainCharacter>(OtherActor);
 		if (mainCharacter)
@@ -155,7 +160,7 @@ void AEnemy::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                       const FHitResult& SweepResult)
 {
-	if (OtherActor)
+	if (OtherActor && Alive())
 	{
 		if (auto mainCharactor = Cast<AMainCharacter>(OtherActor))
 		{
@@ -208,9 +213,9 @@ void AEnemy::WeaponOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 			{
 				UGameplayStatics::PlaySound2D(this, mainC->HitSound);
 			}
-			if(DamageTypeClass)
+			if (DamageTypeClass)
 			{
-				UGameplayStatics::ApplyDamage(mainC,Damage,AIController,this,DamageTypeClass);
+				UGameplayStatics::ApplyDamage(mainC, Damage, AIController, this, DamageTypeClass);
 			}
 		}
 	}
@@ -234,25 +239,28 @@ void AEnemy::AttackCollisionEnd()
 
 void AEnemy::Attack()
 {
-	bAttacking = false;
-	if (AIController)
+	if (Alive())
 	{
-		AIController->StopMovement();
-		SetMovement(EEnemyMovementStatus::EMS_Attacking);
-	}
-	if (!bAttacking)
-	{
-		bAttacking = true;
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		if (AnimInstance)
+		bAttacking = false;
+		if (AIController)
 		{
-			AnimInstance->Montage_Play(AttackMontage, 2.0f);
-			AnimInstance->Montage_JumpToSection(FName("Attack"), AttackMontage);
+			AIController->StopMovement();
+			SetMovement(EEnemyMovementStatus::EMS_Attacking);
 		}
-	}
-	if (SwingSound)
-	{
-		UGameplayStatics::PlaySound2D(this, SwingSound);
+		if (!bAttacking)
+		{
+			bAttacking = true;
+			UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+			if (AnimInstance)
+			{
+				AnimInstance->Montage_Play(AttackMontage, 2.0f);
+				AnimInstance->Montage_JumpToSection(FName("Attack"), AttackMontage);
+			}
+		}
+		if (SwingSound)
+		{
+			UGameplayStatics::PlaySound2D(this, SwingSound);
+		}
 	}
 }
 
@@ -269,5 +277,10 @@ void AEnemy::DeathEnd()
 {
 	GetMesh()->bPauseAnims = true;
 	GetMesh()->bNoSkeletonUpdate = true;
-	Destroy();
+	GetWorldTimerManager().SetTimer(DeathDestroyTimer, this, &AEnemy::EnemyDestroy, DeathDestroyDelay);
+}
+
+bool AEnemy::Alive()
+{
+	return GetMovementStatus() != EEnemyMovementStatus::EMS_Dead;
 }
