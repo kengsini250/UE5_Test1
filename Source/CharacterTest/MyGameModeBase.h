@@ -8,6 +8,7 @@
 
 //定义委托
 DECLARE_MULTICAST_DELEGATE_OneParam(FSetSPDelegate,float)
+DECLARE_MULTICAST_DELEGATE_OneParam(FEnemy_SetHPDelegate,float)
 
 /**
  * 
@@ -20,4 +21,5 @@ public:
 
 	//声明委托
 	FSetSPDelegate SetSPDelegate;
+	FEnemy_SetHPDelegate Enemy_SetHPDelegate;
 };

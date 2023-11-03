@@ -50,6 +50,9 @@ public:
 	class AGameModeBase* GameModeT; 
 	class AMyGameModeBase* GameMode;
 
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Controller")
+	class AMainPlayerController* mainController;
+	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Items")
 	class AWeapon* Weapon;
 

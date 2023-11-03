@@ -17,6 +17,24 @@
 // 	}
 // }
 
+void AMainPlayerController::DisplayEnemyHPBar()
+{
+	if(Enemy_HPBar)
+	{
+		bEnemyHPBar = true;
+		Enemy_HPBar->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void AMainPlayerController::HiddenEnemyHPBar()
+{
+	if(Enemy_HPBar)
+	{
+		bEnemyHPBar = false;
+		Enemy_HPBar->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
 void AMainPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -29,4 +47,10 @@ void AMainPlayerController::BeginPlay()
 	HUDOverlay->AddToViewport();
 	HUDOverlay->SetVisibility(ESlateVisibility::Visible);
 
+	if(Enemy_HPBarAsset)
+	{
+		Enemy_HPBar = CreateWidget<UUserWidget>(this,Enemy_HPBarAsset);
+		Enemy_HPBar->AddToViewport();
+		Enemy_HPBar->SetVisibility(ESlateVisibility::Hidden);
+	}
 }

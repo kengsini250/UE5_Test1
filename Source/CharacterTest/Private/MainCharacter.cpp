@@ -196,6 +196,7 @@ FRotator AMainCharacter::GetLookAtRotatorYaw(FVector target)
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	mainController = Cast<AMainPlayerController>(GetController());
 }
 
 // Called every frame

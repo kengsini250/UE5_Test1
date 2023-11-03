@@ -5,6 +5,7 @@
 
 #include "AIController.h"
 #include "MainCharacter.h"
+#include "MainPlayerController.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -150,6 +151,10 @@ void AEnemy::BoxOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* O
 	{
 		if (auto mainCharactor = Cast<AMainCharacter>(OtherActor))
 		{
+			if(mainCharactor->mainController)
+			{
+				mainCharactor->mainController->HiddenEnemyHPBar();
+			}
 			SetMovement(EEnemyMovementStatus::EMS_Idle);
 			AIController->StopMovement();
 		}
@@ -165,6 +170,10 @@ void AEnemy::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 		if (auto mainCharactor = Cast<AMainCharacter>(OtherActor))
 		{
 			mainCharactor->SetInterpTarget(this);
+			if(mainCharactor->mainController)
+			{
+				mainCharactor->mainController->DisplayEnemyHPBar();
+			}
 			HitTarget = mainCharactor;
 			bOverlappingHitCapsule = true;
 			Attack();

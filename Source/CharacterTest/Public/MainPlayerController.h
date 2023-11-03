@@ -25,6 +25,16 @@ public:
 
 	//也可以
 	// void setSP(float val);
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widgets")
+	TSubclassOf<UUserWidget> Enemy_HPBarAsset;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widgets")
+	UUserWidget* Enemy_HPBar;
+
+	bool bEnemyHPBar = false;
+	void DisplayEnemyHPBar();
+	void HiddenEnemyHPBar();
 protected:
 	virtual void BeginPlay() override;
 
