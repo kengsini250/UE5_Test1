@@ -7,8 +7,8 @@
 #include "MyGameModeBase.generated.h"
 
 //定义委托
-DECLARE_MULTICAST_DELEGATE_OneParam(FSetSPDelegate,float)
-DECLARE_MULTICAST_DELEGATE_OneParam(FEnemy_SetHPDelegate,float)
+// DECLARE_DELEGATE_OneParam(FSetSPDelegate,float)
+// DECLARE_DELEGATE_OneParam(FEnemy_SetHPDelegate,float)
 
 /**
  * 
@@ -20,6 +20,6 @@ class CHARACTERTEST_API AMyGameModeBase : public AGameModeBase
 public:
 
 	//声明委托
-	FSetSPDelegate SetSPDelegate;
-	FEnemy_SetHPDelegate Enemy_SetHPDelegate;
+	// FSetSPDelegate SetSPDelegate;
+	// FEnemy_SetHPDelegate Enemy_SetHPDelegate;
 };

@@ -9,11 +9,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
-#include "CharacterTest/MyGameModeBase.h"
 #include "Components/InputComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Sound/SoundCue.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -37,8 +34,8 @@ AMainCharacter::AMainCharacter()
 	GetCharacterMovement()->JumpZVelocity = 300;
 	GetCharacterMovement()->AirControl = 0.75f;
 
-	GameModeT = UGameplayStatics::GetGameMode(GetWorld());
-	GameMode = Cast<AMyGameModeBase>(GameModeT);
+	// GameModeT = UGameplayStatics::GetGameMode(GetWorld());
+	// GameMode = Cast<AMyGameModeBase>(GameModeT);
 }
 
 void AMainCharacter::SetMovementStatus(EMovementStatus status)
@@ -290,13 +287,26 @@ void AMainCharacter::Tick(float DeltaTime)
 	default:
 		;
 	}
-	GameMode->SetSPDelegate.Broadcast(SP / SP_Max);
+	
+	if(mainController)
+	{
+		mainController->setSP(SP/SP_Max);	
+	}
 
 	if(bInterpToEnemy && InterpTarget)
 	{
 		FRotator LookAtYaw = GetLookAtRotatorYaw(InterpTarget->GetActorLocation());
 		FRotator InterpRotation = FMath::RInterpTo(GetActorRotation(),LookAtYaw,DeltaTime,InterpSpeed);
 		SetActorRotation(InterpRotation);
+	}
+	if(InterpTarget)
+	{
+		EnemyTargetLocation = InterpTarget->GetActorLocation();
+		//敌人坐标传递给control用来绘制UI
+		if(mainController)
+		{
+			mainController->EnemyLocation = EnemyTargetLocation;
+		}
 	}
 }
 
@@ -344,22 +354,6 @@ void AMainCharacter::MoveForward(float value)
 
 		const FVector Direction = FRotationMatrix(YawR).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, value);
-
-		/*
-		//使用委托
-		auto GameModeT = UGameplayStatics::GetGameMode(GetWorld());
-		auto GameMode = Cast<AMyGameModeBase>(GameModeT);
-		if(GameMode)
-		{
-			//也可以
-			// auto CurrController = Cast<AMainPlayerController>(GetController());
-			// if(CurrController)
-			// {
-			// 	SP-=10;
-			// 	CurrController->setSP(SP/100.0f);
-			// }
-		}
-		*/
 	}
 }
 

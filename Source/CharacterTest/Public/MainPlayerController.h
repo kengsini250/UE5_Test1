@@ -23,8 +23,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widgets")
 	UUserWidget* HUDOverlay;
 
-	//也可以
-	// void setSP(float val);
+	void setSP(float val);
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widgets")
 	TSubclassOf<UUserWidget> Enemy_HPBarAsset;
@@ -32,11 +31,15 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widgets")
 	UUserWidget* Enemy_HPBar;
 
+	void setEnemyHP(float val);
+
 	bool bEnemyHPBar = false;
 	void DisplayEnemyHPBar();
 	void HiddenEnemyHPBar();
+
+	FVector EnemyLocation;
 protected:
 	virtual void BeginPlay() override;
-
+	virtual void Tick(float DeltaSeconds) override;
 private:
 };

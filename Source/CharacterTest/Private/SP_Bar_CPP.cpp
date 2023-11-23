@@ -12,13 +12,13 @@ bool USP_Bar_CPP::Initialize()
 	Super::Initialize();
 	
 	//绑定委托
-	auto GameModeT = UGameplayStatics::GetGameMode(GetWorld());
-	auto GameMode = Cast<AMyGameModeBase>(GameModeT);
-	if(GameMode)
-	{
-		// UE_LOG(LogTemp,Warning,TEXT("Init Delegate"));
-		GameMode->SetSPDelegate.AddUObject(this,&USP_Bar_CPP::SetSP);
-	}
+	// auto GameModeT = UGameplayStatics::GetGameMode(GetWorld());
+	// auto GameMode = Cast<AMyGameModeBase>(GameModeT);
+	// if(GameMode)
+	// {
+	// 	// UE_LOG(LogTemp,Warning,TEXT("Init Delegate"));
+	// 	GameMode->SetSPDelegate.BindUObject(this,&USP_Bar_CPP::SetSP);
+	// }
 	return true;
 }
 

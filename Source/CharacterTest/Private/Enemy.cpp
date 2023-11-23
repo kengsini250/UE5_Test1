@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "MainCharacter.h"
 #include "MainPlayerController.h"
+#include "CharacterTest/MyGameModeBase.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -34,6 +35,9 @@ AEnemy::AEnemy()
 	WeaponCollision->SetupAttachment(GetMesh(), FName("EnemyWeaponSlot"));
 
 	GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
+
+	// GameModeT = UGameplayStatics::GetGameMode(GetWorld());
+	// GameMode = Cast<AMyGameModeBase>(GameModeT);
 }
 
 void AEnemy::BloodParticles(const FVector& pos)
@@ -76,6 +80,7 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 }
 
 // Called to bind functionality to input
@@ -170,9 +175,11 @@ void AEnemy::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 		if (auto mainCharactor = Cast<AMainCharacter>(OtherActor))
 		{
 			mainCharactor->SetInterpTarget(this);
+			mainCharactor->setHasCurrEnemy(true);
 			if(mainCharactor->mainController)
 			{
 				mainCharactor->mainController->DisplayEnemyHPBar();
+				mainCharactor->mainController->setEnemyHP(HP/HP_Max);
 			}
 			HitTarget = mainCharactor;
 			bOverlappingHitCapsule = true;
@@ -191,6 +198,7 @@ void AEnemy::HitCapsuleOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 			if (mainCharactor->InterpTarget == this)
 			{
 				mainCharactor->SetInterpTarget(nullptr);
+				mainCharactor->setHasCurrEnemy(false);
 			}
 			bOverlappingHitCapsule = false;
 			SetMovement(EEnemyMovementStatus::EMS_Idle);

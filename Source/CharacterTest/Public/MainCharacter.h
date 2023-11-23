@@ -47,8 +47,8 @@ public:
 	// Sets default values for this character's properties
 	AMainCharacter();
 	
-	class AGameModeBase* GameModeT; 
-	class AMyGameModeBase* GameMode;
+	// class AGameModeBase* GameModeT; 
+	// class AMyGameModeBase* GameMode;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Controller")
 	class AMainPlayerController* mainController;
@@ -104,9 +104,9 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category=Camera,meta=(AllowPrivate="ture"))
 	class UCameraComponent *FollowCamera;
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category=Camera)
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Camera")
 	float BaseTurnRate = 100;
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category=Camera)
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Camera")
 	float BaseLookUpRate = 100;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "Player State")
@@ -141,10 +141,18 @@ public:
 	float InterpSpeed = 15;
 	bool bInterpToEnemy = false;
 	void SetInterpToEnemy(bool Interp);
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,category="Play State")
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,category="Player State")
 	class AEnemy*InterpTarget;
 	FORCEINLINE void SetInterpTarget(AEnemy* e){InterpTarget = e;}
 	FRotator GetLookAtRotatorYaw(FVector target);
+
+	//敌人坐标
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere,Category="Target")
+	FVector EnemyTargetLocation;
+	//判断是否有重叠，用来显示/隐藏血条UI
+	bool bHasCurrEnemy;
+	FORCEINLINE void setHasCurrEnemy(bool curr){bHasCurrEnemy = curr;}
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

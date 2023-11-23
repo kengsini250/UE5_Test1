@@ -26,6 +26,9 @@ public:
 	// Sets default values for this character's properties
 	AEnemy();
 
+	// class AGameModeBase* GameModeT; 
+	// class AMyGameModeBase* GameMode;
+
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Movement")
 	EEnemyMovementStatus EnemyMovementStatus = EEnemyMovementStatus::EMS_Idle;
 	FORCEINLINE void SetMovement(EEnemyMovementStatus status)

@@ -11,13 +11,13 @@ bool UEnemy_HPBar::Initialize()
 {
 	Super::Initialize();
 	//绑定委托
-	auto GameModeT = UGameplayStatics::GetGameMode(GetWorld());
-	auto GameMode = Cast<AMyGameModeBase>(GameModeT);
-	if(GameMode)
-	{
-		// UE_LOG(LogTemp,Warning,TEXT("Init Delegate"));
-		GameMode->Enemy_SetHPDelegate.AddUObject(this,&UEnemy_HPBar::SetEnemyHP);
-	}
+	// auto GameModeT = UGameplayStatics::GetGameMode(GetWorld());
+	// auto GameMode = Cast<AMyGameModeBase>(GameModeT);
+	// if(GameMode)
+	// {
+	// 	// UE_LOG(LogTemp,Warning,TEXT("Init Delegate"));
+	// 	GameMode->Enemy_SetHPDelegate.BindUObject(this,&UEnemy_HPBar::SetEnemyHP);
+	// }
 	return true;
 }
 
