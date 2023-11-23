@@ -29,7 +29,7 @@ public:
 	TSubclassOf<UUserWidget> Enemy_HPBarAsset;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widgets")
-	UUserWidget* Enemy_HPBar;
+	UUserWidget* Enemy_HPBar_Overlay;
 
 	void setEnemyHP(float val);
 

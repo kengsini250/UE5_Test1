@@ -20,29 +20,29 @@ void AMainPlayerController::setSP(float val)
 
 void AMainPlayerController::setEnemyHP(float val)
 {
-	auto EnemyHPBar = Enemy_HPBar->GetWidgetFromName("Enemy_HPBar");
-	if(EnemyHPBar)
+	auto temp = Enemy_HPBar_Overlay->GetWidgetFromName("Enemy_HPBar");
+	if(temp)
 	{
-		auto MyEnemyHP = Cast<UEnemy_HPBar>(EnemyHPBar);
-		MyEnemyHP->SetEnemyHP(val);
+		auto bar = Cast<UEnemy_HPBar>(temp);
+		bar->SetEnemyHP(val);
 	}
 }
 
 void AMainPlayerController::DisplayEnemyHPBar()
 {
-	if(Enemy_HPBar)
+	if(Enemy_HPBar_Overlay)
 	{
 		bEnemyHPBar = true;
-		Enemy_HPBar->SetVisibility(ESlateVisibility::Visible);
+		Enemy_HPBar_Overlay->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
 void AMainPlayerController::HiddenEnemyHPBar()
 {
-	if(Enemy_HPBar)
+	if(Enemy_HPBar_Overlay)
 	{
 		bEnemyHPBar = false;
-		Enemy_HPBar->SetVisibility(ESlateVisibility::Hidden);
+		Enemy_HPBar_Overlay->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -60,13 +60,13 @@ void AMainPlayerController::BeginPlay()
 
 	if(Enemy_HPBarAsset)
 	{
-		Enemy_HPBar = CreateWidget<UUserWidget>(this,Enemy_HPBarAsset);
-		Enemy_HPBar->AddToViewport();
-		Enemy_HPBar->SetVisibility(ESlateVisibility::Hidden);
+		Enemy_HPBar_Overlay = CreateWidget<UUserWidget>(this,Enemy_HPBarAsset);
+		Enemy_HPBar_Overlay->AddToViewport();
+		Enemy_HPBar_Overlay->SetVisibility(ESlateVisibility::Hidden);
 		
 		//对齐
 		FVector2D dd(0,0);
-		Enemy_HPBar->SetAlignmentInViewport(dd);
+		Enemy_HPBar_Overlay->SetAlignmentInViewport(dd);
 	}
 
 }
@@ -75,7 +75,7 @@ void AMainPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if(Enemy_HPBar)
+	if(Enemy_HPBar_Overlay)
 	{
 		//2D坐标
 		FVector2D PositionInViewport;
@@ -84,8 +84,8 @@ void AMainPlayerController::Tick(float DeltaSeconds)
 		//血条UI大小
 		const FVector2D UISize = FVector2D(200.f,30.f);
 		//位置映射
-		Enemy_HPBar->SetPositionInViewport(PositionInViewport);
+		Enemy_HPBar_Overlay->SetPositionInViewport(PositionInViewport);
 		//大小映射
-		Enemy_HPBar->SetDesiredSizeInViewport(UISize);
+		Enemy_HPBar_Overlay->SetDesiredSizeInViewport(UISize);
 	}
 }
