@@ -76,6 +76,8 @@ void AMainPlayerController::Tick(float DeltaSeconds)
 		FVector2D PositionInViewport;
 		//敌人的3D坐标转换成2D坐标
 		ProjectWorldLocationToScreen(EnemyLocation,PositionInViewport);
+		PositionInViewport.Y -=230;
+		PositionInViewport.X -=130;
 		//血条UI大小
 		const FVector2D UISize = FVector2D(200.f,30.f);
 		
