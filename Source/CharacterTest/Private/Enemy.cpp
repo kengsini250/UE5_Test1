@@ -124,12 +124,22 @@ float AEnemy::TakeDamage(float _Damage, FDamageEvent const& DamageEvent, AContro
 {
 	if (HP - _Damage <= 0)
 	{
-		HP -= _Damage;
+		HP=0;
 		Die();
+
+		return 0;
 	}
 	else
 	{
 		HP -= _Damage;
+	}
+
+	if(HP/HP_Max<=0)
+	{
+		HitTarget->mainController->setEnemyHP(0);
+	}else
+	{
+		HitTarget->mainController->setEnemyHP(HP/HP_Max);
 	}
 
 	return _Damage;
@@ -179,11 +189,11 @@ void AEnemy::HitCapsuleOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 			if(mainCharactor->mainController)
 			{
 				mainCharactor->mainController->DisplayEnemyHPBar();
-				mainCharactor->mainController->setEnemyHP(HP/HP_Max);
 			}
 			HitTarget = mainCharactor;
 			bOverlappingHitCapsule = true;
 			Attack();
+			
 		}
 	}
 }

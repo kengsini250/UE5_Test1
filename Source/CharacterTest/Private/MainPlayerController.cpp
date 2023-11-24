@@ -20,30 +20,24 @@ void AMainPlayerController::setSP(float val)
 
 void AMainPlayerController::setEnemyHP(float val)
 {
-	auto temp = Enemy_HPBar_Overlay->GetWidgetFromName("Enemy_HPBar");
-	if(temp)
+	auto Enemy_HPBar = EnemyHUDOverlay->GetWidgetFromName("Enemy_HPBar");
+	if(Enemy_HPBar)
 	{
-		auto bar = Cast<UEnemy_HPBar>(temp);
-		bar->SetEnemyHP(val);
+		auto temp = Cast<UEnemy_HPBar>(Enemy_HPBar);
+		temp->SetEnemyHP(val);
 	}
 }
 
 void AMainPlayerController::DisplayEnemyHPBar()
 {
-	if(Enemy_HPBar_Overlay)
-	{
 		bEnemyHPBar = true;
-		Enemy_HPBar_Overlay->SetVisibility(ESlateVisibility::Visible);
-	}
+		EnemyHUDOverlay->SetVisibility(ESlateVisibility::Visible);
 }
 
 void AMainPlayerController::HiddenEnemyHPBar()
 {
-	if(Enemy_HPBar_Overlay)
-	{
 		bEnemyHPBar = false;
-		Enemy_HPBar_Overlay->SetVisibility(ESlateVisibility::Hidden);
-	}
+		EnemyHUDOverlay->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void AMainPlayerController::BeginPlay()
@@ -60,13 +54,13 @@ void AMainPlayerController::BeginPlay()
 
 	if(Enemy_HPBarAsset)
 	{
-		Enemy_HPBar_Overlay = CreateWidget<UUserWidget>(this,Enemy_HPBarAsset);
-		Enemy_HPBar_Overlay->AddToViewport();
-		Enemy_HPBar_Overlay->SetVisibility(ESlateVisibility::Hidden);
+		EnemyHUDOverlay = CreateWidget<UUserWidget>(this,Enemy_HPBarAsset);
+		EnemyHUDOverlay->AddToViewport();
+		EnemyHUDOverlay->SetVisibility(ESlateVisibility::Hidden);
 		
 		//对齐
 		FVector2D dd(0,0);
-		Enemy_HPBar_Overlay->SetAlignmentInViewport(dd);
+		EnemyHUDOverlay->SetAlignmentInViewport(dd);
 	}
 
 }
@@ -75,7 +69,8 @@ void AMainPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if(Enemy_HPBar_Overlay)
+	auto Enemy_HPBar = EnemyHUDOverlay->GetWidgetFromName(TEXT("Enemy_HPBar"));
+	if(Enemy_HPBar)
 	{
 		//2D坐标
 		FVector2D PositionInViewport;
@@ -83,9 +78,10 @@ void AMainPlayerController::Tick(float DeltaSeconds)
 		ProjectWorldLocationToScreen(EnemyLocation,PositionInViewport);
 		//血条UI大小
 		const FVector2D UISize = FVector2D(200.f,30.f);
+		
 		//位置映射
-		Enemy_HPBar_Overlay->SetPositionInViewport(PositionInViewport);
+		EnemyHUDOverlay->SetPositionInViewport(PositionInViewport);
 		//大小映射
-		Enemy_HPBar_Overlay->SetDesiredSizeInViewport(UISize);
+		EnemyHUDOverlay->SetDesiredSizeInViewport(UISize);
 	}
 }
