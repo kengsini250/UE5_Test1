@@ -69,6 +69,9 @@ void AMainCharacter::G_Up()
 void AMainCharacter::G_Down()
 {
 	bGiveWeapon = true;
+
+	if(MovementStatus == EMovementStatus::EMS_Dead) return;
+	
 	//手里没有武器
 	if(Weapon == nullptr)
 	{
@@ -121,7 +124,7 @@ void AMainCharacter::LMBDown()
 
 void AMainCharacter::Attack()
 {
-	if(!bAttacking)
+	if(!bAttacking && (MovementStatus != EMovementStatus::EMS_Dead))
 	{
 		bAttacking = true;
 		SetInterpToEnemy(true);
@@ -153,11 +156,30 @@ void AMainCharacter::Attack()
 
 void AMainCharacter::Die()
 {
-	UAnimInstance*AnimInstance=GetMesh()->GetAnimInstance();
-	if(AnimInstance)
+	//被多个敌人攻击后，只播放一次死亡动画
+	if(MovementStatus != EMovementStatus::EMS_Dead)
 	{
-		AnimInstance->Montage_Play(AttackMontage,2.0f);
-		AnimInstance->Montage_JumpToSection(FName("Death"),AttackMontage);
+		UAnimInstance*AnimInstance=GetMesh()->GetAnimInstance();
+		if(AnimInstance)
+		{
+			AnimInstance->Montage_Play(AttackMontage,2.0f);
+			AnimInstance->Montage_JumpToSection(FName("Death"),AttackMontage);
+		}
+	}
+	SetMovementStatus(EMovementStatus::EMS_Dead);
+}
+
+void AMainCharacter::DeathEnd()
+{
+	GetMesh()->bPauseAnims=true;
+	GetMesh()->bNoSkeletonUpdate = true;
+}
+
+void AMainCharacter::Jump()
+{
+	if(MovementStatus != EMovementStatus::EMS_Dead)
+	{
+		Super::Jump();
 	}
 }
 
@@ -201,6 +223,9 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//如果死亡，直接跳过计算
+	if(MovementStatus == EMovementStatus::EMS_Dead)
+		return;
 
 	float DeltaSp = SpRate * DeltaTime;
 	switch (SpStatus)
@@ -315,7 +340,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMainCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMainCharacter::ShiftKeyDown);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AMainCharacter::ShiftKeyUp);
@@ -347,7 +372,7 @@ float AMainCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
 
 void AMainCharacter::MoveForward(float value)
 {
-	if ((Controller != nullptr) && (value != 0) && (!bAttacking))
+	if ((Controller != nullptr) && (value != 0) && (!bAttacking) && (MovementStatus != EMovementStatus::EMS_Dead))
 	{
 		const FRotator R = Controller->GetControlRotation();
 		const FRotator YawR(0, R.Yaw, 0);
@@ -359,7 +384,7 @@ void AMainCharacter::MoveForward(float value)
 
 void AMainCharacter::MoveRight(float value)
 {
-	if ((Controller != nullptr) && (value != 0)&&(!bAttacking))
+	if ((Controller != nullptr) && (value != 0)&&(!bAttacking) && (MovementStatus != EMovementStatus::EMS_Dead))
 	{
 		const FRotator R = Controller->GetControlRotation();
 		const FRotator YawR(0, R.Yaw, 0);

@@ -15,6 +15,9 @@ enum class EMovementStatus : uint8
 	EMS_Sprinting
 	UMETA(DisplayName="Sprinting"),
 
+	EMS_Dead
+	UMETA(DisplayName="Dead"),
+
 	EMS_MAX
 	UMETA(DisplayName="MAX")
 };
@@ -88,6 +91,12 @@ public:
 	void Attack();
 
 	void Die();
+
+	UFUNCTION(BlueprintCallable)
+	void DeathEnd();
+
+	virtual void Jump() override;
+	
 	//蓝图调用
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
