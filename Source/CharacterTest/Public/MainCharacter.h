@@ -203,4 +203,6 @@ public:
 	{
 		OverlappingItem = w;
 	}
+
+	void switchLevel(FName name);
 };

@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -417,4 +418,18 @@ float AMainCharacter::getCurrHP_Per()
 void AMainCharacter::setHP(float value)
 {
 	HP = value;
+}
+
+void AMainCharacter::switchLevel(FName name)
+{
+	UWorld* World = GetWorld();
+	if(World)
+	{
+		FString CurrLevel = World->GetMapName();
+		FName CurrLevelName(*CurrLevel);
+		if(CurrLevelName!=name)
+		{
+			UGameplayStatics::OpenLevel(World,name);
+		}
+	}
 }
