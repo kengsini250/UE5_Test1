@@ -18,7 +18,7 @@ ANewLevel::ANewLevel()
 	Billboard = CreateDefaultSubobject<UBillboardComponent>(TEXT("Billboard"));
 	Billboard->SetupAttachment(GetRootComponent());
 	//默认初始地图名
-	MapName = "";
+	MapName = "Stylized_Egypt_Demo";
 }
 
 // Called when the game starts or when spawned

@@ -20,7 +20,7 @@ public:
 
 	class UBillboardComponent* Billboard;
 	
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="NewMap")
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="NewMap")
 	FName MapName;
 protected:
 	// Called when the game starts or when spawned
