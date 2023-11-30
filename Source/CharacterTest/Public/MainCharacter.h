@@ -205,4 +205,9 @@ public:
 	}
 
 	void switchLevel(FName name);
+
+	UFUNCTION(BlueprintCallable)
+	void SaveGame();
+	UFUNCTION(BlueprintCallable)
+	void LoadGame(bool SetPos);
 };

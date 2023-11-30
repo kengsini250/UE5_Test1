@@ -5,11 +5,13 @@
 
 #include "Enemy.h"
 #include "MainPlayerController.h"
+#include "SaveGame_NoBP.h"
 #include "Weapon.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
+#include "GameFramework/SaveGame.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -431,5 +433,53 @@ void AMainCharacter::switchLevel(FName name)
 		{
 			UGameplayStatics::OpenLevel(World,name);
 		}
+	}
+}
+
+void AMainCharacter::SaveGame()
+{
+	USaveGame_NoBP* SaveGameInstance = 
+	Cast<USaveGame_NoBP>(
+	UGameplayStatics::CreateSaveGameObject(
+		USaveGame_NoBP::StaticClass())
+		);
+
+	SaveGameInstance->characterState.HP = HP;
+	SaveGameInstance->characterState.HP_Max = HP_Max;
+	SaveGameInstance->characterState.SP = SP;
+	SaveGameInstance->characterState.SP_Max = SP_Max;
+	SaveGameInstance->characterState.Location = GetActorLocation();
+	SaveGameInstance->characterState.Rotator = GetActorRotation();
+
+	UGameplayStatics::SaveGameToSlot(
+		SaveGameInstance,
+		SaveGameInstance->SaveName,
+		SaveGameInstance->SaveID);
+	
+}
+
+void AMainCharacter::LoadGame(bool SetPos)
+{
+	USaveGame_NoBP* LoadGameInstance = 
+	Cast<USaveGame_NoBP>(
+UGameplayStatics::CreateSaveGameObject(
+	USaveGame_NoBP::StaticClass())
+	);
+
+	LoadGameInstance = Cast<USaveGame_NoBP>(
+	UGameplayStatics::LoadGameFromSlot(
+		LoadGameInstance->SaveName,
+		LoadGameInstance->SaveID)
+		);
+
+	HP = LoadGameInstance->characterState.HP;
+	HP_Max = LoadGameInstance->characterState.HP_Max;
+	SP = LoadGameInstance->characterState.SP;
+	SP_Max = LoadGameInstance->characterState.SP_Max;
+
+	if(SetPos)
+	{
+		SetActorLocation(LoadGameInstance->characterState.Location);
+		SetActorRotation(LoadGameInstance->characterState.Rotator);
 	}
 }
