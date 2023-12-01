@@ -23,6 +23,9 @@ struct FCharacterState
 	FVector Location;
 	UPROPERTY(VisibleAnywhere,Category = "SaveData")
 	FRotator Rotator;
+	
+	UPROPERTY(VisibleAnywhere,Category = "SaveData")
+	FString WeaponName;
 };
 /**
  * 

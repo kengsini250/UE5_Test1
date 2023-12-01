@@ -210,4 +210,7 @@ public:
 	void SaveGame();
 	UFUNCTION(BlueprintCallable)
 	void LoadGame(bool SetPos);
+
+	UPROPERTY(EditAnywhere,Category = "Save")
+	TSubclassOf<class ASaveWeapon_BP> SaveWeaponMap;
 };

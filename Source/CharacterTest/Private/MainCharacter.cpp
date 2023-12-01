@@ -6,6 +6,7 @@
 #include "Enemy.h"
 #include "MainPlayerController.h"
 #include "SaveGame_NoBP.h"
+#include "SaveWeapon_BP.h"
 #include "Weapon.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -451,6 +452,11 @@ void AMainCharacter::SaveGame()
 	SaveGameInstance->characterState.Location = GetActorLocation();
 	SaveGameInstance->characterState.Rotator = GetActorRotation();
 
+	if(Weapon)
+	{
+		SaveGameInstance->characterState.WeaponName = Weapon->WeaponName;
+	}
+
 	UGameplayStatics::SaveGameToSlot(
 		SaveGameInstance,
 		SaveGameInstance->SaveName,
@@ -476,6 +482,22 @@ UGameplayStatics::CreateSaveGameObject(
 	HP_Max = LoadGameInstance->characterState.HP_Max;
 	SP = LoadGameInstance->characterState.SP;
 	SP_Max = LoadGameInstance->characterState.SP_Max;
+
+	if(SaveWeaponMap)
+	{
+		ASaveWeapon_BP* savedWeapon = GetWorld()->SpawnActor<ASaveWeapon_BP>(SaveWeaponMap);
+		if(savedWeapon)
+		{
+			FString name = LoadGameInstance->characterState.WeaponName;
+			if(savedWeapon->WeaponMap.Contains(name))
+			{
+				AWeapon* ToEquip = GetWorld()->SpawnActor<AWeapon>(savedWeapon->WeaponMap[name]);
+				ToEquip->Equip(this);
+			}
+
+		}
+	}
+	
 
 	if(SetPos)
 	{

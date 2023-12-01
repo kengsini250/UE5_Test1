@@ -29,6 +29,8 @@ AWeapon::AWeapon()
 
 	HitCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitCapsule"));
 	HitCapsule->SetupAttachment(GetRootComponent());
+
+	WeaponName = TEXT("");
 }
 
 void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

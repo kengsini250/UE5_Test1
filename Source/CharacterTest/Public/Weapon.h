@@ -17,6 +17,9 @@ protected:
 	virtual void BeginPlay() override;
 public:
 	AWeapon();
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Item | Name")
+	FString WeaponName;
+	
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="SleletalMesh")
 	class USkeletalMeshComponent* skeletalMesh;
 
