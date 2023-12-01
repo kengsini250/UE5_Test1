@@ -492,6 +492,12 @@ UGameplayStatics::CreateSaveGameObject(
 			if(savedWeapon->WeaponMap.Contains(name))
 			{
 				AWeapon* ToEquip = GetWorld()->SpawnActor<AWeapon>(savedWeapon->WeaponMap[name]);
+				if(Weapon)
+				{
+					Weapon->Destroy();
+					Weapon = nullptr;
+				}
+				
 				ToEquip->Equip(this);
 			}
 
