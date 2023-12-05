@@ -40,6 +40,29 @@ void AMainPlayerController::HiddenEnemyHPBar()
 		EnemyHUDOverlay->SetVisibility(ESlateVisibility::Hidden);
 }
 
+void AMainPlayerController::DisplayPauseMenu()
+{
+	bPauseMenu=true;
+	PauseMenu->SetVisibility(ESlateVisibility::Visible);
+}
+
+void AMainPlayerController::HiddenPauseMenu()
+{
+	bPauseMenu=false;
+	PauseMenu->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void AMainPlayerController::TogglePauseMenu()
+{
+	if(bPauseMenu)
+	{
+		HiddenPauseMenu();
+	}else
+	{
+		DisplayPauseMenu();
+	}
+}
+
 void AMainPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -63,6 +86,12 @@ void AMainPlayerController::BeginPlay()
 		EnemyHUDOverlay->SetAlignmentInViewport(dd);
 	}
 
+	if(PauseMenuAsset)
+	{
+		PauseMenu = CreateWidget<UUserWidget>(this,PauseMenuAsset);
+		PauseMenu->AddToViewport();
+		PauseMenu->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void AMainPlayerController::Tick(float DeltaSeconds)

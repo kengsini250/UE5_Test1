@@ -38,6 +38,18 @@ public:
 	void HiddenEnemyHPBar();
 
 	FVector EnemyLocation;
+
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widgets")
+	TSubclassOf<UUserWidget> PauseMenuAsset;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widgets")
+	UUserWidget* PauseMenu;
+
+	bool bPauseMenu = false;
+	void DisplayPauseMenu();
+	void HiddenPauseMenu();
+	void TogglePauseMenu();
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

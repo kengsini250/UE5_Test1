@@ -213,4 +213,8 @@ public:
 
 	UPROPERTY(EditAnywhere,Category = "Save")
 	TSubclassOf<class ASaveWeapon_BP> SaveWeaponMap;
+
+	bool bESC = false;
+	void EscUp();
+	void EscDown();
 };

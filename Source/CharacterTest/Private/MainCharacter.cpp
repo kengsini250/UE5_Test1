@@ -353,6 +353,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("GiveWeapon", IE_Released, this, &AMainCharacter::G_Up);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMainCharacter::LMBDown);
 	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AMainCharacter::LMBUp);
+	PlayerInputComponent->BindAction("ESC", IE_Pressed, this, &AMainCharacter::EscDown);
+	PlayerInputComponent->BindAction("ESC", IE_Released, this, &AMainCharacter::EscUp);
+	
 	
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
@@ -509,5 +512,19 @@ UGameplayStatics::CreateSaveGameObject(
 	{
 		SetActorLocation(LoadGameInstance->characterState.Location);
 		SetActorRotation(LoadGameInstance->characterState.Rotator);
+	}
+}
+
+void AMainCharacter::EscUp()
+{
+	bESC = false;
+}
+
+void AMainCharacter::EscDown()
+{
+	bESC = true;
+	if(mainController)
+	{
+		mainController->TogglePauseMenu();
 	}
 }
