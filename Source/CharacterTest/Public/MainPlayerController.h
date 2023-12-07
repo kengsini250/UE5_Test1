@@ -47,7 +47,9 @@ public:
 	UUserWidget* PauseMenu;
 
 	bool bPauseMenu = false;
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category="HUD")
 	void DisplayPauseMenu();
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category="HUD")
 	void HiddenPauseMenu();
 	void TogglePauseMenu();
 protected:

@@ -40,13 +40,13 @@ void AMainPlayerController::HiddenEnemyHPBar()
 		EnemyHUDOverlay->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void AMainPlayerController::DisplayPauseMenu()
+void AMainPlayerController::DisplayPauseMenu_Implementation()
 {
 	bPauseMenu=true;
 	PauseMenu->SetVisibility(ESlateVisibility::Visible);
 }
 
-void AMainPlayerController::HiddenPauseMenu()
+void AMainPlayerController::HiddenPauseMenu_Implementation()
 {
 	bPauseMenu=false;
 	PauseMenu->SetVisibility(ESlateVisibility::Hidden);
