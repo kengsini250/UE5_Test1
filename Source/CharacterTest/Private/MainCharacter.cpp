@@ -75,7 +75,7 @@ void AMainCharacter::G_Down()
 	if(MovementStatus == EMovementStatus::EMS_Dead) return;
 	if(mainController)
 	{
-		if(!mainController->bPauseMenu)
+		if(mainController->bPauseMenu)
 			return;
 	}
 	
@@ -562,6 +562,11 @@ UGameplayStatics::CreateSaveGameObject(
 		SetActorLocation(LoadGameInstance->characterState.Location);
 		SetActorRotation(LoadGameInstance->characterState.Rotator);
 	}
+	//改变角色状态
+	SetMovementStatus(EMovementStatus::EMS_Normal);
+	//恢复动画
+	GetMesh()->bPauseAnims=false;
+	GetMesh()->bNoSkeletonUpdate = false;
 }
 
 void AMainCharacter::EscUp()
