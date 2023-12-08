@@ -179,6 +179,9 @@ public:
 	void MoveRight(float value);
 	void TurnAtRate(float value);
 	void LookUpAtRate(float value);
+	void LookUp(float value);
+	void Turn(float value);
+	
 
 	UFUNCTION(BlueprintCallable)
 	float getCurrHP();

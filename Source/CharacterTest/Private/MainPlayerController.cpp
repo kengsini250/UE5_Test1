@@ -44,12 +44,20 @@ void AMainPlayerController::DisplayPauseMenu_Implementation()
 {
 	bPauseMenu=true;
 	PauseMenu->SetVisibility(ESlateVisibility::Visible);
+
+	FInputModeGameAndUI mode;
+	SetInputMode(mode);
+	bShowMouseCursor=true;
 }
 
 void AMainPlayerController::HiddenPauseMenu_Implementation()
 {
 	bPauseMenu=false;
-	PauseMenu->SetVisibility(ESlateVisibility::Hidden);
+	// PauseMenu->SetVisibility(ESlateVisibility::Hidden);//蓝图中设置
+
+	FInputModeGameOnly mode;
+	SetInputMode(mode);
+	bShowMouseCursor=true;
 }
 
 void AMainPlayerController::TogglePauseMenu()

@@ -72,9 +72,14 @@ void AMainCharacter::G_Up()
 
 void AMainCharacter::G_Down()
 {
-	bGiveWeapon = true;
-
 	if(MovementStatus == EMovementStatus::EMS_Dead) return;
+	if(mainController)
+	{
+		if(!mainController->bPauseMenu)
+			return;
+	}
+	
+	bGiveWeapon = true;
 	
 	//手里没有武器
 	if(Weapon == nullptr)
@@ -114,6 +119,12 @@ void AMainCharacter::LMBUp()
 
 void AMainCharacter::LMBDown()
 {
+	if(mainController)
+	{
+		if(mainController->bPauseMenu)
+			return;
+	}
+	
 	if(Weapon == nullptr)
 	{
 		//没武器
@@ -181,6 +192,11 @@ void AMainCharacter::DeathEnd()
 
 void AMainCharacter::Jump()
 {
+	if(mainController)
+	{
+		if(mainController->bPauseMenu)
+			return;
+	}	
 	if(MovementStatus != EMovementStatus::EMS_Dead)
 	{
 		Super::Jump();
@@ -357,8 +373,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("ESC", IE_Released, this, &AMainCharacter::EscUp);
 	
 	
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("Turn", this, &AMainCharacter::Turn);
+	PlayerInputComponent->BindAxis("LookUp", this, &AMainCharacter::LookUp);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
@@ -379,7 +395,11 @@ float AMainCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
 
 void AMainCharacter::MoveForward(float value)
 {
-	if ((Controller != nullptr) && (value != 0) && (!bAttacking) && (MovementStatus != EMovementStatus::EMS_Dead))
+	if ((Controller != nullptr)
+		&& (value != 0)
+		&& (!bAttacking)
+		&& (MovementStatus != EMovementStatus::EMS_Dead)
+		&& !mainController->bPauseMenu)
 	{
 		const FRotator R = Controller->GetControlRotation();
 		const FRotator YawR(0, R.Yaw, 0);
@@ -391,7 +411,12 @@ void AMainCharacter::MoveForward(float value)
 
 void AMainCharacter::MoveRight(float value)
 {
-	if ((Controller != nullptr) && (value != 0)&&(!bAttacking) && (MovementStatus != EMovementStatus::EMS_Dead))
+	if ((Controller != nullptr)
+		&& (value != 0)
+		&&(!bAttacking)
+		&&
+		(MovementStatus != EMovementStatus::EMS_Dead)
+		&& !mainController->bPauseMenu)
 	{
 		const FRotator R = Controller->GetControlRotation();
 		const FRotator YawR(0, R.Yaw, 0);
@@ -409,6 +434,30 @@ void AMainCharacter::TurnAtRate(float value)
 void AMainCharacter::LookUpAtRate(float value)
 {
 	AddControllerPitchInput(value * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void AMainCharacter::LookUp(float value)
+{
+	if ((Controller != nullptr)
+	&& (value != 0)
+	&& (!bAttacking)
+	&& (MovementStatus != EMovementStatus::EMS_Dead)
+	&& !mainController->bPauseMenu)
+	{
+		AddControllerPitchInput(value);
+	}
+}
+
+void AMainCharacter::Turn(float value)
+{
+	if ((Controller != nullptr)
+	&& (value != 0)
+	&& (!bAttacking)
+	&& (MovementStatus != EMovementStatus::EMS_Dead)
+	&& !mainController->bPauseMenu)
+	{
+		AddControllerYawInput(value);
+	}
 }
 
 float AMainCharacter::getCurrHP()
