@@ -26,6 +26,8 @@ struct FCharacterState
 	
 	UPROPERTY(VisibleAnywhere,Category = "SaveData")
 	FString WeaponName;
+	UPROPERTY(VisibleAnywhere,Category = "SaveData")
+	FString MapName;
 };
 /**
  * 

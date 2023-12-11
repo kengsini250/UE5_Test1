@@ -8,4 +8,5 @@ USaveGame_NoBP::USaveGame_NoBP()
 	SaveName = TEXT("Default");
 	SaveID = 0;
 	characterState.WeaponName=TEXT("");
+	characterState.MapName=TEXT("");
 }

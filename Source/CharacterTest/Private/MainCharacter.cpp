@@ -236,6 +236,13 @@ void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	mainController = Cast<AMainPlayerController>(GetController());
+	
+	LoadGameNoSwitch();
+	if(mainController)
+	{
+		FInputModeGameOnly mode;
+		mainController->SetInputMode(mode);
+	}
 }
 
 // Called every frame
@@ -503,6 +510,11 @@ void AMainCharacter::SaveGame()
 	SaveGameInstance->characterState.SP_Max = SP_Max;
 	SaveGameInstance->characterState.Location = GetActorLocation();
 	SaveGameInstance->characterState.Rotator = GetActorRotation();
+	
+	//保存地图名
+	FString MapName = GetWorld()->GetMapName();
+	MapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);//处理地图名
+	SaveGameInstance->characterState.MapName = MapName;
 
 	if(Weapon)
 	{
@@ -523,6 +535,65 @@ void AMainCharacter::LoadGame(bool SetPos)
 UGameplayStatics::CreateSaveGameObject(
 	USaveGame_NoBP::StaticClass())
 	);
+
+	LoadGameInstance = Cast<USaveGame_NoBP>(
+	UGameplayStatics::LoadGameFromSlot(
+		LoadGameInstance->SaveName,
+		LoadGameInstance->SaveID)
+		);
+
+	HP = LoadGameInstance->characterState.HP;
+	HP_Max = LoadGameInstance->characterState.HP_Max;
+	SP = LoadGameInstance->characterState.SP;
+	SP_Max = LoadGameInstance->characterState.SP_Max;
+	
+	if(SaveWeaponMap)
+	{
+		ASaveWeapon_BP* savedWeapon = GetWorld()->SpawnActor<ASaveWeapon_BP>(SaveWeaponMap);
+		if(savedWeapon)
+		{
+			FString name = LoadGameInstance->characterState.WeaponName;
+			if(savedWeapon->WeaponMap.Contains(name))
+			{
+				AWeapon* ToEquip = GetWorld()->SpawnActor<AWeapon>(savedWeapon->WeaponMap[name]);
+				if(Weapon)
+				{
+					Weapon->Destroy();
+					Weapon = nullptr;
+				}
+				
+				ToEquip->Equip(this);
+			}
+
+		}
+	}
+	
+
+	if(SetPos)
+	{
+		SetActorLocation(LoadGameInstance->characterState.Location);
+		SetActorRotation(LoadGameInstance->characterState.Rotator);
+	}
+	//改变角色状态
+	SetMovementStatus(EMovementStatus::EMS_Normal);
+	//恢复动画
+	GetMesh()->bPauseAnims=false;
+	GetMesh()->bNoSkeletonUpdate = false;
+
+	if(LoadGameInstance->characterState.MapName != TEXT(""))
+	{
+		FName switchMap(*LoadGameInstance->characterState.MapName);
+		switchLevel(switchMap);
+	}
+}
+
+void AMainCharacter::LoadGameNoSwitch()
+{
+	USaveGame_NoBP* LoadGameInstance = 
+Cast<USaveGame_NoBP>(
+UGameplayStatics::CreateSaveGameObject(
+USaveGame_NoBP::StaticClass())
+);
 
 	LoadGameInstance = Cast<USaveGame_NoBP>(
 	UGameplayStatics::LoadGameFromSlot(
@@ -555,13 +626,7 @@ UGameplayStatics::CreateSaveGameObject(
 
 		}
 	}
-	
 
-	if(SetPos)
-	{
-		SetActorLocation(LoadGameInstance->characterState.Location);
-		SetActorRotation(LoadGameInstance->characterState.Rotator);
-	}
 	//改变角色状态
 	SetMovementStatus(EMovementStatus::EMS_Normal);
 	//恢复动画
