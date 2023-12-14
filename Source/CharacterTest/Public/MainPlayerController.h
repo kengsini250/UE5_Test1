@@ -52,6 +52,15 @@ public:
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category="HUD")
 	void HiddenPauseMenu();
 	void TogglePauseMenu();
+
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Widgets")
+	TSubclassOf<UUserWidget> Character_Property_Asset;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Widgets")
+	UUserWidget* Character_Property;
+	bool bCharactorPropertyHUD = false;
+	void DisplayCharactorPropertyHUD();
+	void HiddenCharactorPropertyHUD();
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

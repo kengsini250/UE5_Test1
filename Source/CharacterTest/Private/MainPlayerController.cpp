@@ -71,6 +71,18 @@ void AMainPlayerController::TogglePauseMenu()
 	}
 }
 
+void AMainPlayerController::DisplayCharactorPropertyHUD()
+{
+	bCharactorPropertyHUD = true;
+	Character_Property->SetVisibility(ESlateVisibility::Visible);
+}
+
+void AMainPlayerController::HiddenCharactorPropertyHUD()
+{
+	bCharactorPropertyHUD = false;
+	Character_Property->SetVisibility(ESlateVisibility::Hidden);
+}
+
 void AMainPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -99,6 +111,13 @@ void AMainPlayerController::BeginPlay()
 		PauseMenu = CreateWidget<UUserWidget>(this,PauseMenuAsset);
 		PauseMenu->AddToViewport();
 		PauseMenu->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if(Character_Property_Asset)
+	{
+		Character_Property = CreateWidget<UUserWidget>(this,Character_Property_Asset);
+		Character_Property->AddToViewport();
+		Character_Property->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 

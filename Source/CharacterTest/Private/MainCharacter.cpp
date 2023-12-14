@@ -112,6 +112,24 @@ void AMainCharacter::G_Down()
 	}
 }
 
+void AMainCharacter::C_Down()
+{
+	b_C_KeyDown=true;
+	if(mainController)
+	{
+		mainController->DisplayCharactorPropertyHUD();
+	}
+}
+
+void AMainCharacter::C_Up()
+{
+	b_C_KeyDown=false;
+	if(mainController)
+	{
+		mainController->HiddenCharactorPropertyHUD();
+	}
+}
+
 void AMainCharacter::LMBUp()
 {
 	bLMBDown = false;
@@ -378,7 +396,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AMainCharacter::LMBUp);
 	PlayerInputComponent->BindAction("ESC", IE_Pressed, this, &AMainCharacter::EscDown);
 	PlayerInputComponent->BindAction("ESC", IE_Released, this, &AMainCharacter::EscUp);
-	
+	PlayerInputComponent->BindAction("Character_Property", IE_Pressed, this, &AMainCharacter::C_Down);
+	PlayerInputComponent->BindAction("Character_Property", IE_Released, this, &AMainCharacter::C_Up);	
 	
 	PlayerInputComponent->BindAxis("Turn", this, &AMainCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AMainCharacter::LookUp);

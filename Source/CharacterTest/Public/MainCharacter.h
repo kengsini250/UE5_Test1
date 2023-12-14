@@ -82,6 +82,10 @@ public:
 	void G_Up();
 	void G_Down();
 
+	bool b_C_KeyDown = false;
+	void C_Down();
+	void C_Up();
+
 	UPROPERTY(VisibleAnywhere)
 	bool bLMBDown = false;
 	UPROPERTY(VisibleAnywhere)
