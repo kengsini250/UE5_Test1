@@ -84,7 +84,6 @@ public:
 
 	bool b_C_KeyDown = false;
 	void C_Down();
-	void C_Up();
 
 	UPROPERTY(VisibleAnywhere)
 	bool bLMBDown = false;
@@ -185,7 +184,11 @@ public:
 	void LookUpAtRate(float value);
 	void LookUp(float value);
 	void Turn(float value);
-	
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="LV")
+	int LV = 1;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="EXP")
+	int EXP = 0;
 
 	UFUNCTION(BlueprintCallable)
 	float getCurrHP();

@@ -4,8 +4,12 @@
 #include "MainPlayerController.h"
 
 #include "Enemy_HPBar.h"
+#include "EXP_Bar_Cpp.h"
+#include "LV_Bar_Cpp.h"
+#include "MainCharacter.h"
 #include "SP_Bar_CPP.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 
 
 void AMainPlayerController::setSP(float val)
@@ -81,6 +85,40 @@ void AMainPlayerController::HiddenCharactorPropertyHUD()
 {
 	bCharactorPropertyHUD = false;
 	Character_Property->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void AMainPlayerController::changeEXP(int s)
+{
+	auto currCharacter = Cast<AMainCharacter>(GetCharacter());
+	auto EXP = Character_Property->GetWidgetFromName("EXP_Bar");
+	if(EXP)
+	{
+		auto EXP_Bar = Cast<UEXP_Bar_Cpp>(EXP);
+		if(EXP_Bar)
+		{
+			int UP = 50;
+			int temp = s - UP;
+			if(temp>0)
+			{
+				EXP_Bar->changeEXP(temp);
+				changeLV(++currCharacter->LV);
+			}else
+			{
+				int te=currCharacter->EXP+s;
+				EXP_Bar->changeEXP(te);
+			}
+		}
+	}
+}
+
+void AMainPlayerController::changeLV(int s)
+{
+	auto LV = Character_Property->GetWidgetFromName("LV_Bar");
+	if(LV)
+	{
+		auto LV_Bar = Cast<ULV_Bar_Cpp>(LV);
+		LV_Bar->changeLV(s);
+	}
 }
 
 void AMainPlayerController::BeginPlay()

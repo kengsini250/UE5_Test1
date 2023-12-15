@@ -114,19 +114,16 @@ void AMainCharacter::G_Down()
 
 void AMainCharacter::C_Down()
 {
-	b_C_KeyDown=true;
+	b_C_KeyDown= !b_C_KeyDown;
 	if(mainController)
 	{
-		mainController->DisplayCharactorPropertyHUD();
-	}
-}
-
-void AMainCharacter::C_Up()
-{
-	b_C_KeyDown=false;
-	if(mainController)
-	{
-		mainController->HiddenCharactorPropertyHUD();
+		if(!mainController->bCharactorPropertyHUD)
+		{
+			mainController->DisplayCharactorPropertyHUD();
+		}else
+		{
+			mainController->HiddenCharactorPropertyHUD();
+		}
 	}
 }
 
@@ -254,7 +251,10 @@ void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	mainController = Cast<AMainPlayerController>(GetController());
-	
+
+	mainController->changeLV(1);
+	mainController->changeEXP(0);
+
 	LoadGameNoSwitch();
 	if(mainController)
 	{
@@ -397,7 +397,6 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("ESC", IE_Pressed, this, &AMainCharacter::EscDown);
 	PlayerInputComponent->BindAction("ESC", IE_Released, this, &AMainCharacter::EscUp);
 	PlayerInputComponent->BindAction("Character_Property", IE_Pressed, this, &AMainCharacter::C_Down);
-	PlayerInputComponent->BindAction("Character_Property", IE_Released, this, &AMainCharacter::C_Up);	
 	
 	PlayerInputComponent->BindAxis("Turn", this, &AMainCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AMainCharacter::LookUp);

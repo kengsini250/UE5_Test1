@@ -112,11 +112,13 @@ void AEnemy::Die()
 		AnimInstance->Montage_JumpToSection(FName("Death"), AttackMontage);
 	}
 	SetMovement(EEnemyMovementStatus::EMS_Dead);
+	HitTarget->mainController->changeEXP(100);
 
 	Box->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 }
 
 float AEnemy::TakeDamage(float _Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -126,7 +128,6 @@ float AEnemy::TakeDamage(float _Damage, FDamageEvent const& DamageEvent, AContro
 	{
 		HP=0;
 		Die();
-
 		return 0;
 	}
 	else

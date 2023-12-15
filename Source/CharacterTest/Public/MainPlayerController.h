@@ -61,6 +61,9 @@ public:
 	bool bCharactorPropertyHUD = false;
 	void DisplayCharactorPropertyHUD();
 	void HiddenCharactorPropertyHUD();
+
+	void changeEXP(int s);
+	void changeLV(int s);
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
