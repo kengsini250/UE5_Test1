@@ -96,16 +96,20 @@ void AMainPlayerController::changeEXP(int s)
 		auto EXP_Bar = Cast<UEXP_Bar_Cpp>(EXP);
 		if(EXP_Bar)
 		{
-			int UP = 50;
-			int temp = s - UP;
-			if(temp>0)
+			//当前等级上限
+			int UP = ExpRule[currCharacter->LV];
+			//经验差
+			int temp = currCharacter->EXP + s - UP;
+			if(temp>=0)
 			{
 				EXP_Bar->changeEXP(temp);
+				currCharacter->EXP = temp;
+				//升级
 				changeLV(++currCharacter->LV);
 			}else
 			{
-				int te=currCharacter->EXP+s;
-				EXP_Bar->changeEXP(te);
+				currCharacter->EXP+=s;
+				EXP_Bar->changeEXP(currCharacter->EXP);
 			}
 		}
 	}
@@ -124,6 +128,12 @@ void AMainPlayerController::changeLV(int s)
 void AMainPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//init exp rule
+	for(int i=1;i<11;i++)
+	{
+		ExpRule.Add(i,FMath::Pow(i,3.0f)+50);
+	}
 
 
 	if(HUDOverlayAsset)
